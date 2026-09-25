@@ -1,0 +1,27 @@
+.searchbar {
+  position: relative;
+  display: flex;
+
+  &__icon {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  &__input {
+    padding: 0.6rem 1.5rem 0.6rem 3rem;
+    border-radius: var(--radius-pill);
+    outline: none;
+    border: var(--border);
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: var(--focus-ring);
+    }
+  }
+}

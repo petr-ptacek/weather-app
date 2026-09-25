@@ -1,3 +1,6 @@
-@import "./_variables.scss";
-@import "./_reset.scss";
-@import "./_global.scss";
+@use "abstracts/variables";
+@use "base/reset";
+@use "base/global";
+@use "layout/app";
+@use "layout/container";
+@use "components";

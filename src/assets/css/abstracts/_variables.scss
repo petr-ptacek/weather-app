@@ -1,0 +1,72 @@
+:root {
+  /*YELLOW*/
+  --color-yellow-100: #fdf5e6;
+  --color-yellow-200: #fbe1b5;
+  --color-yellow-300: #f8c36c;
+  --color-yellow-400: #f5a623;
+  --color-yellow-500: #f5a623;
+  --color-yellow-600: #db8c09;
+  --color-yellow-700: #aa6d07;
+  --color-yellow-800: #794e05;
+  --color-yellow-900: #492e03;
+
+  /*GREEN*/
+  --color-green-100: #ebf9f1;
+  --color-green-200: #c3edd5;
+  --color-green-300: #88dcab;
+  --color-green-400: #35b86b;
+  --color-green-500: #4ccb81;
+  --color-green-600: #33b267;
+  --color-green-700: #278a50;
+  --color-green-800: #1c6239;
+  --color-green-900: #113b22;
+
+  /*BLUE*/
+  --color-blue-100: #e9f0fd;
+  --color-blue-200: #c0d5fa;
+  --color-blue-300: #86aef5;
+  --color-blue-400: #3773ea;
+  --color-blue-500: #2e66d3;
+  --color-blue-600: #2655b0;
+  --color-blue-700: #1e448d;
+  --color-blue-800: #16336a;
+  --color-blue-900: #0e2147;
+
+  /*GRAY*/
+  --color-gray-100: #f2f3f6;
+  --color-gray-200: #dcdfe6;
+  --color-gray-300: #b9bfcc;
+  --color-gray-400: #838da4;
+  --color-gray-500: #707a91;
+  --color-gray-600: #5d667a;
+  --color-gray-700: #4a5262;
+  --color-gray-800: #363d49;
+  --color-gray-900: #232730;
+
+  /*SEMANTIC TOKENS*/
+  --background-page: linear-gradient(160deg, var(--color-blue-100) 0%, var(--color-yellow-100) 100%);
+  --color-surface: #fff;
+  --color-text: var(--color-gray-900);
+  --color-text-muted: var(--color-gray-600);
+  --color-heading: var(--color-blue-800);
+
+  --color-primary: var(--color-blue-400);
+  --color-primary-soft: var(--color-blue-100);
+  --color-primary-strong: var(--color-blue-700);
+  --color-accent: var(--color-yellow-500);
+
+  --font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 1rem;
+
+  --border-width: 1px;
+  --border-color: var(--color-gray-300);
+  --border: var(--border-width) solid var(--border-color);
+
+  --radius-pill: 2rem;
+  --radius-card: 2rem;
+
+  --focus-ring: 0 0 0 4px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  --shadow-card: 0 10px 30px color-mix(in srgb, var(--color-blue-900) 10%, transparent);
+
+  --icon-size: 1.5rem;
+}

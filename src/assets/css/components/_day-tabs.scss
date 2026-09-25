@@ -1,0 +1,31 @@
+.day-tabs {
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    list-style: none;
+  }
+
+  &__button {
+    padding: 0.6rem 1.5rem;
+    border-radius: var(--radius-pill);
+    border: var(--border);
+    background-color: var(--color-surface);
+    cursor: pointer;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: var(--focus-ring);
+    }
+
+    &--active {
+      background-color: var(--color-primary-soft);
+      border-color: var(--color-primary);
+      color: var(--color-primary-strong);
+    }
+  }
+}

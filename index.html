@@ -1,13 +1,57 @@
 <!doctype html>
-<html lang="en">
-  <head>
+<html lang="cs">
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>weather-app</title>
-  </head>
-  <body>
-    <div id="app"></div>
+    <title>Přehled počasí</title>
+</head>
+<body class="app">
+    <main>
+        <div class="container">
+            <header class="header">
+                <h1 class="header__title">Přehled počasí</h1>
+
+                <div class="header__controls">
+                    <div class="location">
+                        <svg class="icon location__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M0 0h24v24H0z" fill="none" />
+                            <path
+                                    fill="currentColor"
+                                    d="M18 8c0-3.31-2.69-6-6-6S6 4.69 6 8c0 4.5 6 11 6 11s6-6.5 6-11m-8 0c0-1.1.9-2 2-2s2 .9 2 2a2 2 0 1 1-4 0M5 20v2h14v-2z" />
+                        </svg>
+                        <span class="location__name">Olomouc, CZ</span>
+                    </div>
+
+                    <div class="searchbar">
+                        <svg class="icon searchbar__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M0 0h24v24H0z" fill="none" />
+                            <path
+                                    fill="currentColor"
+                                    d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14" />
+                        </svg>
+
+                        <input type="search" class="searchbar__input" autocomplete="off">
+                    </div>
+                </div>
+            </header>
+
+            <nav class="day-tabs" aria-label="Výběr dne">
+                <ul class="day-tabs__list">
+                    <li class="day-tabs__item">
+                        <button type="button" class="day-tabs__button day-tabs__button--active">Pondělí</button>
+                    </li>
+                    <li class="day-tabs__item">
+                        <button type="button" class="day-tabs__button">Úterý</button>
+                    </li>
+                    <li class="day-tabs__item">
+                        <button type="button" class="day-tabs__button">Středa</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </main>
+
     <script type="module" src="/src/main.ts"></script>
-  </body>
+</body>
 </html>

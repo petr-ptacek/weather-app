@@ -1,0 +1,13 @@
+html {
+  min-height: 100%;
+  background: var(--background-page);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
