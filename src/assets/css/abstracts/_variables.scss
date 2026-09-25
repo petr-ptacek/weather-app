@@ -54,6 +54,7 @@
   --color-primary-soft: var(--color-blue-100);
   --color-primary-strong: var(--color-blue-700);
   --color-accent: var(--color-yellow-500);
+  --color-danger: #c53030;
 
   --font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-size-base: 1rem;
@@ -64,6 +65,7 @@
 
   --radius-pill: 2rem;
   --radius-card: 2rem;
+  --radius-popover: 1rem;
 
   --focus-ring: 0 0 0 4px color-mix(in srgb, var(--color-primary) 20%, transparent);
   --shadow-card: 0 10px 30px color-mix(in srgb, var(--color-blue-900) 10%, transparent);

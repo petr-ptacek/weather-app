@@ -1,1 +1,1 @@
-export {};
+export { getCities } from "./getCities.ts";
