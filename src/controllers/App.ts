@@ -1,3 +1,4 @@
+import type { City } from "../types/city.ts";
 import { Searchbar } from "./Searchbar.ts";
 
 export class App {
@@ -5,7 +6,7 @@ export class App {
 
   constructor() {
     this.searchbar = new Searchbar({
-      onLocationSelected: () => void 0
+      onLocationSelected: this.handleLocationSelected.bind(this)
     });
   }
 
@@ -18,5 +19,8 @@ export class App {
     this.searchbar.init();
   }
 
+  handleLocationSelected(_location: City) {
 
+  }
 }
+

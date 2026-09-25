@@ -1,9 +1,9 @@
-import type { MaybeHTMLElement, Nullable } from "../types";
-import { getCities }                       from "../api";
-import type { City }                       from "../types/city.ts";
+import { getCities }             from "../api";
+import type { MaybeHTMLElement } from "../types";
+import type { City }             from "../types/city.ts";
 
 export interface SearchbarProps {
-  onLocationSelected(): void;
+  onLocationSelected(location: City): void;
 }
 
 const NO_RESULTS = "Žádné výsledky";
@@ -63,7 +63,6 @@ export class Searchbar {
 
     await this.fetchCities(value);
     this.drawOptions();
-
     this.setMessage(!this._cities.length ? NO_RESULTS : "");
     this.showPopover();
   }
@@ -90,7 +89,12 @@ export class Searchbar {
     this._optionsElement.innerHTML = "";
 
     this._optionsElement.append(
-      ...this._cities.map(createOption)
+      ...this._cities.map((city) => {
+          return createOption(
+            city, () => this._props.onLocationSelected(city)
+          );
+        }
+      )
     );
   }
 }
@@ -102,13 +106,14 @@ export class Searchbar {
  *      </button>
  *  </li>
  */
-function createOption(city: City) {
+function createOption(city: City, onClick: (e: Event) => void) {
   const meta = document.createElement("span");
   meta.innerText = city.state ?? city.country;
   meta.className = "searchbar__option-meta";
 
   const button = document.createElement("button");
   button.className = "searchbar__option";
+  button.addEventListener("click", onClick);
 
   button.append(city.name, meta);
 
