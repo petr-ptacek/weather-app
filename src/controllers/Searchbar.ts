@@ -80,6 +80,11 @@ export class Searchbar {
     this._popoverElement?.classList.add("hidden");
   }
 
+  private handleLocationSelected(location: City) {
+    this._props.onLocationSelected(location);
+    this.hidePopover();
+  }
+
   private async fetchCities(query: string) {
     this._cities = await getCities({ query });
   }
@@ -91,7 +96,7 @@ export class Searchbar {
     this._optionsElement.append(
       ...this._cities.map((city) => {
           return createOption(
-            city, () => this._props.onLocationSelected(city)
+            city, () => this.handleLocationSelected(city)
           );
         }
       )
