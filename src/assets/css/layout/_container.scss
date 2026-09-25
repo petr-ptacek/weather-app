@@ -1,11 +1,5 @@
 .container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  width: 100%;
   max-width: 1400px;
-  margin: auto;
-  padding: 2rem;
-  background-color: var(--color-surface);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
+  margin-inline: auto;
 }
