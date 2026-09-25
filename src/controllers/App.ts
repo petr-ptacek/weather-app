@@ -1,10 +1,12 @@
 import type { City }      from "../types/city.ts";
 import { Searchbar }      from "./Searchbar.ts";
 import { HeaderControls } from "./HeaderControls.ts";
+import { DayTabs }        from "./DayTabs.ts";
 
 export class App {
   searchbar: Searchbar;
   headerControls: HeaderControls;
+  dayTabs: DayTabs;
   selectedLocation: City | null;
 
   constructor() {
@@ -13,6 +15,11 @@ export class App {
     });
 
     this.headerControls = new HeaderControls();
+
+    this.dayTabs = new DayTabs({
+      days: [new Date],
+      onDaySelected: () => void 0
+    });
 
     this.selectedLocation = null;
   }
@@ -23,6 +30,7 @@ export class App {
       return;
     }
 
+    this.dayTabs.init();
     this.searchbar.init();
     this.headerControls.init();
   }
