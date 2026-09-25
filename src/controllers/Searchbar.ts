@@ -1,7 +1,7 @@
 import type { MaybeHTMLElement, Nullable } from "../types";
 
 export interface SearchbarProps {
-  onSelectLocation(): void;
+  onLocationSelected(): void;
 }
 
 export class Searchbar {
