@@ -3,6 +3,8 @@ import type { MaybeHTMLElement } from "../types";
 import type { City }             from "../types/city.ts";
 
 export interface SearchbarProps {
+  cities?: City[];
+
   onLocationSelected(location: City): void;
 }
 
@@ -16,12 +18,14 @@ export class Searchbar {
   private _messageElement: MaybeHTMLElement<HTMLDivElement>;
   private _props: SearchbarProps;
 
-  private _cities: City[] = [];
+  private _cities: City[];
 
   constructor(props: SearchbarProps) {
     this._root = null;
     this._inputElement = null;
     this._props = props;
+
+    this._cities = props.cities ?? [];
   }
 
   init() {
