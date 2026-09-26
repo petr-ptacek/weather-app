@@ -51,9 +51,7 @@ export class App {
     this.forecast.init();
 
     if ( this.selectedLocation ) {
-      const { name, state, country } = this.selectedLocation;
-      this.headerControls.setLocationName(`${ name }, ${ state ?? country }`);
-      await this.forecast.loadData(this.selectedLocation);
+      await this.handleLocationSelected(this.selectedLocation);
     }
 
     this.initialized = true;
