@@ -1,4 +1,5 @@
 import type { MaybeHTMLElement } from "../types";
+import { DateUtils }             from "../utils";
 
 interface DayTabsProps {
   days?: Date[];
@@ -58,10 +59,10 @@ export class DayTabs {
 
     this._list.append(
       ...this._days.map(day => {
-        return createDay({
+        return DayTabs.createDay({
           date: day,
           onClick: () => this.handleSelectDay(day),
-          isSelected: this._selectedDay === day
+          isSelected: !!this._selectedDay && DateUtils.isEqualDate(this._selectedDay, day)
         });
       })
     );
@@ -72,26 +73,26 @@ export class DayTabs {
     this.drawDays();
     this._props.onDaySelected(day);
   }
-}
 
-/**
- *                <li class="day-tabs__item">
- *                         <button type="button" class="day-tabs__button day-tabs__button--active">Pondělí</button>
- *                     </li>
- */
-function createDay({ date, onClick, isSelected }: { date: Date, isSelected: boolean, onClick: () => void }) {
-  const li = document.createElement("li");
-  li.className = "day-tabs__item";
+  /**
+   *                <li class="day-tabs__item">
+   *                         <button type="button" class="day-tabs__button day-tabs__button--active">Pondělí</button>
+   *                     </li>
+   */
+  private static createDay({ date, onClick, isSelected }: { date: Date, isSelected: boolean, onClick: () => void }) {
+    const li = document.createElement("li");
+    li.className = "day-tabs__item";
 
-  const button = document.createElement("button");
-  button.className = "day-tabs__button";
+    const button = document.createElement("button");
+    button.className = "day-tabs__button";
 
-  if ( isSelected ) button.classList.add("day-tabs__button--active");
+    if ( isSelected ) button.classList.add("day-tabs__button--active");
 
-  button.innerText = date.toLocaleString();
-  button.addEventListener("click", onClick);
+    button.innerText = date.toLocaleString();
+    button.addEventListener("click", onClick);
 
-  li.append(button);
+    li.append(button);
 
-  return li;
+    return li;
+  }
 }

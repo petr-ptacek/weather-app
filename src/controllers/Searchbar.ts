@@ -1,4 +1,4 @@
-import { getCities }             from "../api";
+import { WeatherApi }            from "../api";
 import type { MaybeHTMLElement } from "../types";
 import type { City }             from "../types/city.ts";
 
@@ -90,7 +90,7 @@ export class Searchbar {
   }
 
   private async fetchCities(query: string) {
-    this._cities = await getCities({ query });
+    this._cities = await WeatherApi.getCities({ query });
   }
 
   private drawOptions() {
@@ -99,37 +99,35 @@ export class Searchbar {
 
     this._optionsElement.append(
       ...this._cities.map((city) => {
-          return createOption(
+          return Searchbar.createOption(
             city, () => this.handleLocationSelected(city)
           );
         }
       )
     );
   }
+
+  /**
+   * <li>
+   *      <button type="button" class="searchbar__option searchbar__option--highlighted">
+   *          Olomouc <span class="searchbar__option-meta">CZ</span>
+   *      </button>
+   *  </li>
+   */
+  private static createOption(city: City, onClick: (e: Event) => void) {
+    const meta = document.createElement("span");
+    meta.innerText = city.state ?? city.country;
+    meta.className = "searchbar__option-meta";
+
+    const button = document.createElement("button");
+    button.className = "searchbar__option";
+    button.addEventListener("click", onClick);
+
+    button.append(city.name, meta);
+
+    const li = document.createElement("li");
+    li.append(button);
+
+    return li;
+  }
 }
-
-/**
- * <li>
- *      <button type="button" class="searchbar__option searchbar__option--highlighted">
- *          Olomouc <span class="searchbar__option-meta">CZ</span>
- *      </button>
- *  </li>
- */
-function createOption(city: City, onClick: (e: Event) => void) {
-  const meta = document.createElement("span");
-  meta.innerText = city.state ?? city.country;
-  meta.className = "searchbar__option-meta";
-
-  const button = document.createElement("button");
-  button.className = "searchbar__option";
-  button.addEventListener("click", onClick);
-
-  button.append(city.name, meta);
-
-  const li = document.createElement("li");
-  li.append(button);
-
-  return li;
-}
-
-

@@ -1,2 +1,2 @@
-export { getCities }   from "./getCities.ts";
-export { getForecast } from "./getForecast.ts";
+export { WeatherApi }                               from "./WeatherApi.ts";
+export type { GetCitiesParams, GetForecastParams }  from "./WeatherApi.ts";

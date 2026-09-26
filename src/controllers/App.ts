@@ -18,7 +18,7 @@ export class App {
 
     this.dayTabs = new DayTabs({
       days: [new Date],
-      onDaySelected: () => void 0
+      onDaySelected: this.handleDaySelected.bind(this)
     });
 
     this.selectedLocation = null;
@@ -33,6 +33,10 @@ export class App {
     this.dayTabs.init();
     this.searchbar.init();
     this.headerControls.init();
+  }
+
+  handleDaySelected(_day: Date) {
+
   }
 
   handleLocationSelected(location: City) {
