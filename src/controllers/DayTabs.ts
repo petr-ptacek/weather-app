@@ -28,17 +28,17 @@ export class DayTabs {
     return this._days;
   }
 
-  set days(v: Date[]) {
-    this._days = v;
-    this.update();
-  }
-
   get selectedDay() {
     return this._selectedDay;
   }
 
-  set selectedDay(v) {
-    this._selectedDay = v;
+  setSelectedDay(day: Date) {
+    this._selectedDay = day;
+    this.update();
+  }
+
+  setDays(days: Date[]) {
+    this._days = days;
     this.update();
   }
 
@@ -88,7 +88,7 @@ export class DayTabs {
 
     if ( isSelected ) button.classList.add("day-tabs__button--active");
 
-    button.innerText = date.toLocaleString();
+    button.innerText = DateUtils.formatDay(date);
     button.addEventListener("click", onClick);
 
     li.append(button);

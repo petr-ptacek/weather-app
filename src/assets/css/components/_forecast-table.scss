@@ -1,7 +1,7 @@
 .forecast-table {
   border-collapse: collapse;
 
-  &__head-cell {
+  &__header-cell {
     padding: 0.75rem 1rem;
     border-bottom: var(--border);
     font-size: 0.875rem;
@@ -29,8 +29,8 @@
     white-space: nowrap;
   }
 
-  &__head-cell--numeric,
-  &__cell--numeric {
+  &__header-cell--right,
+  &__cell--right {
     text-align: right;
   }
 }

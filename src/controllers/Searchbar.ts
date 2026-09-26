@@ -13,9 +13,9 @@ const NO_RESULTS = "Žádné výsledky";
 export class Searchbar {
   private _root: MaybeHTMLElement;
   private _inputElement: MaybeHTMLElement<HTMLInputElement>;
-  private _popoverElement: MaybeHTMLElement<HTMLDivElement>;
-  private _optionsElement: MaybeHTMLElement<HTMLDivElement>;
-  private _messageElement: MaybeHTMLElement<HTMLDivElement>;
+  private _popoverElement: MaybeHTMLElement<HTMLDivElement> = null;
+  private _optionsElement: MaybeHTMLElement<HTMLDivElement> = null;
+  private _messageElement: MaybeHTMLElement<HTMLDivElement> = null;
   private _props: SearchbarProps;
 
   private _cities: City[];
@@ -41,7 +41,7 @@ export class Searchbar {
     document.addEventListener("click", this.handleDocumentClick.bind(this));
   }
 
-  handleDocumentClick(e: MouseEvent) {
+  private handleDocumentClick(e: MouseEvent) {
     if ( !this._root ) return;
 
     if ( !e.composedPath().includes(this._root) ) {
@@ -49,13 +49,13 @@ export class Searchbar {
     }
   }
 
-  handleInputFocus(_e: Event) {
+  private handleInputFocus(_e: Event) {
     if ( this._cities.length ) {
       this.showPopover();
     }
   }
 
-  async handleInputChange(e: Event) {
+  private async handleInputChange(e: Event) {
     const value = (e.target as HTMLInputElement).value.trim();
 
     if ( !value ) {

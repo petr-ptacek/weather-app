@@ -1,4 +1,26 @@
 export class DateUtils {
+  /** undefined locale = browser language */
+  private static readonly DAY_FORMAT = new Intl.DateTimeFormat(undefined, {
+    weekday: "long",
+    day: "numeric",
+    month: "numeric",
+    year: "numeric"
+  });
+
+  private static readonly TIME_FORMAT = new Intl.DateTimeFormat(undefined, {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+
+  static formatTime(date: Date): string {
+    return DateUtils.TIME_FORMAT.format(date);
+  }
+
+  static formatDay(date: Date): string {
+    const formatted = DateUtils.DAY_FORMAT.format(date);
+    return formatted.charAt(0).toLocaleUpperCase() + formatted.slice(1);
+  }
+
   static startOfDay(date: Date): Date {
     const result = new Date(date);
     result.setHours(0, 0, 0, 0);

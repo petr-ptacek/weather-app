@@ -1,19 +1,19 @@
-/** Forecast for one 3 hour slot */
-export interface ForecastEntry {
+/** 3 hours slot */
+export interface ForecastSlot {
   time: Date;
   temperature: number;
   feelsLike: number;
   humidity: number;
+  /** srazky in percent (0–100) */
+  precipitationChance: number;
   windSpeed: number;
   description: string;
   icon: string;
 }
 
-/** Forecast entries grouped by day */
+/** slots grouped by day */
 export interface DayForecast {
   /** Start of the day */
   date: Date;
-  minTemperature: number;
-  maxTemperature: number;
-  entries: ForecastEntry[];
+  slots: ForecastSlot[];
 }
