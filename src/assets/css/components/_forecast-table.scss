@@ -1,0 +1,36 @@
+.forecast-table {
+  border-collapse: collapse;
+
+  &__head-cell {
+    padding: 0.75rem 1rem;
+    border-bottom: var(--border);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  &__row {
+    border-bottom: var(--border);
+    transition: background-color 0.15s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: var(--color-primary-soft);
+    }
+  }
+
+  &__cell {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+
+  &__head-cell--numeric,
+  &__cell--numeric {
+    text-align: right;
+  }
+}
