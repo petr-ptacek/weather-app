@@ -1,6 +1,7 @@
 import { WeatherApi }            from "../api";
 import type { MaybeHTMLElement } from "../types";
 import type { City }             from "../types/city.ts";
+import { Utils }                 from "../utils";
 
 export interface SearchbarProps {
   cities?: City[];
@@ -9,6 +10,7 @@ export interface SearchbarProps {
 }
 
 const NO_RESULTS = "Žádné výsledky";
+const FETCH_ERROR = "Nepodařilo se načíst města";
 
 export class Searchbar {
   private _root: MaybeHTMLElement;
@@ -59,15 +61,25 @@ export class Searchbar {
     const value = (e.target as HTMLInputElement).value.trim();
 
     if ( !value ) {
+      this._fetchCities.abort();
       this._cities = [];
       this.drawOptions();
       this.hidePopover();
       return;
     }
 
-    await this.fetchCities(value);
+    try {
+      this._cities = await this._fetchCities(value);
+      this.setMessage(!this._cities.length ? NO_RESULTS : "");
+    } catch ( e ) {
+      // superseded by a newer input – newer call handles the UI
+      if ( Utils.isAbortError(e) ) return;
+
+      this._cities = [];
+      this.setMessage(FETCH_ERROR);
+    }
+
     this.drawOptions();
-    this.setMessage(!this._cities.length ? NO_RESULTS : "");
     this.showPopover();
   }
 
@@ -89,9 +101,9 @@ export class Searchbar {
     this.hidePopover();
   }
 
-  private async fetchCities(query: string) {
-    this._cities = await WeatherApi.getCities({ query });
-  }
+  private readonly _fetchCities = Utils.withAbortable(
+    (signal, query: string) => WeatherApi.getCities({ query }, signal)
+  );
 
   private drawOptions() {
     if ( !this._optionsElement ) return;

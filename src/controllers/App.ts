@@ -61,10 +61,6 @@ export class App {
     this.initialized = true;
   }
 
-  /**
-   * Tries user's current position, falls back to the default location
-   * when geolocation is denied, unavailable, times out or no city is found.
-   */
   private async resolveInitialLocation(): Promise<City> {
     try {
       const coords = await Utils.getCurrentPosition();
@@ -72,7 +68,6 @@ export class App {
 
       if ( !city ) return App.DEFAULT_LOCATION;
 
-      // keep exact user's position for the forecast, the city is used for its name
       return { ...city, lat: coords.latitude, lon: coords.longitude };
     } catch ( e ) {
       return App.DEFAULT_LOCATION;

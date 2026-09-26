@@ -31,4 +31,44 @@ export class Utils {
       );
     });
   }
+
+  /**
+   * @link {https://github.com/petr-ptacek/js-lab/blob/main/packages/js-core/src/async/withAbortable/withAbortable.ts}
+   * @example
+   * const search = Utils.withAbortable((signal, query: string) => fetch(url, { signal }));
+   * search("f");  // aborted by the next call
+   * search("fa");
+   * search.abort(); // aborts the pending call manually
+   */
+  static withAbortable<TArgs extends unknown[], TResult>(
+    fn: (signal: AbortSignal, ...args: TArgs) => Promise<TResult>
+  ) {
+    let controller: AbortController | null = null;
+
+    const abort = () => {
+      controller?.abort();
+      controller = null;
+    };
+
+    const wrapped = async (...args: TArgs): Promise<TResult> => {
+      abort();
+
+      const current = new AbortController();
+      controller = current;
+
+      const result = await fn(current.signal, ...args);
+
+      // fn may ignore the signal – never return a stale result
+      current.signal.throwIfAborted();
+
+      return result;
+    };
+
+    return Object.assign(wrapped, { abort });
+  }
+
+  static isAbortError(e: unknown): boolean {
+    return e instanceof DOMException && e.name === "AbortError";
+  }
+
 }

@@ -41,11 +41,11 @@ export class WeatherApi {
     return city ? WeatherMapper.toCity(city) : null;
   }
 
-  static async getCities(params: GetCitiesParams): Promise<City[]> {
+  static async getCities(params: GetCitiesParams, signal?: AbortSignal): Promise<City[]> {
     const data = await WeatherApi.request<CityDTO[]>(WeatherApi.GEO_API_URL, {
       q: params.query,
       limit: 5
-    });
+    }, signal);
 
     return data.map(WeatherMapper.toCity);
   }
@@ -60,14 +60,14 @@ export class WeatherApi {
     return WeatherMapper.toDayForecasts(data);
   }
 
-  private static async request<T>(baseUrl: string, params: QueryParams): Promise<T> {
+  private static async request<T>(baseUrl: string, params: QueryParams, signal?: AbortSignal): Promise<T> {
     const url = new URL(baseUrl);
 
     Object.entries({ ...params, appid: WeatherApi.API_KEY }).forEach(([key, value]) => {
       url.searchParams.append(key, String(value));
     });
 
-    const response = await fetch(url);
+    const response = await fetch(url, { signal });
 
     if ( !response.ok ) {
       throw new Error(
