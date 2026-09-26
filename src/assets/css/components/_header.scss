@@ -12,6 +12,11 @@
     flex-direction: row;
   }
 
+  &__icon {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
   &__title {
     font-size: 2.4rem;
     color: var(--color-heading);
