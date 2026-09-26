@@ -1,7 +1,17 @@
+@use "../abstracts/breakpoints" as bp;
+
 .searchbar {
   position: relative;
   display: flex;
-  width: 24rem;
+  width: 100%;
+
+  @include bp.up(lg) {
+    max-width: 20rem;
+  }
+
+  @include bp.up(xl) {
+    max-width: 24rem;
+  }
 
   &__icon {
     position: absolute;

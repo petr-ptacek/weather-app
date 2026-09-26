@@ -5,10 +5,15 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    flex-direction: column;
     gap: 0.75rem;
     list-style: none;
 
     @include bp.up(md) {
+      flex-direction: row;
+    }
+
+    @include bp.up(lg) {
       justify-content: left;
     }
   }
@@ -19,8 +24,12 @@
     border: var(--border);
     background-color: var(--color-surface);
     cursor: pointer;
-
+    width: 100%;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+
+    @include bp.up(sm) {
+      width: auto;
+    }
 
     &:hover,
     &:focus-visible {

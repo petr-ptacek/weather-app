@@ -3,18 +3,21 @@
 .header {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
   gap: 1rem;
 
-  @include bp.up(md) {
-    gap: 2rem;
+  @include bp.up(lg) {
     flex-direction: row;
   }
 
   &__icon {
     width: 2.4rem;
     height: 2.4rem;
+    display: none;
+
+    @include bp.up(sm) {
+      display: block;
+    }
   }
 
   &__title {
@@ -23,13 +26,18 @@
   }
 
   &__controls {
+    flex: 1;
+    justify-content: end;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    width: 100%;
 
-    @include bp.up(md) {
-      gap: 2rem;
+
+    @include bp.up(lg) {
+      gap: 1rem;
+      width: auto;
       flex-direction: row;
     }
   }
