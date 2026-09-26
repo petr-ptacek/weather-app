@@ -4,8 +4,18 @@ import { Forecast }         from "./Forecast.ts";
 import { Searchbar }        from "./Searchbar.ts";
 import { HeaderControls }   from "./HeaderControls.ts";
 import { DayTabs }          from "./DayTabs.ts";
+import { WeatherApi }       from "../api";
+import { Utils }            from "../utils";
 
 export class App {
+  private static readonly DEFAULT_LOCATION: City = {
+    name: "Olomouc",
+    country: "CZ",
+    state: "Central Moravia",
+    lat: 49.5940567,
+    lon: 17.251143
+  };
+
   searchbar: Searchbar;
   headerControls: HeaderControls;
   dayTabs: DayTabs;
@@ -14,13 +24,7 @@ export class App {
   initialized: boolean;
 
   constructor() {
-    this.selectedLocation = {
-      name: "Olomouc",
-      country: "CZ",
-      state: "Central Moravia",
-      lat: 49.5940567,
-      lon: 17.251143
-    };
+    this.selectedLocation = null;
 
     this.searchbar = new Searchbar({
       onLocationSelected: this.handleLocationSelected.bind(this)
@@ -50,11 +54,29 @@ export class App {
     this.dayTabs.init();
     this.forecast.init();
 
-    if ( this.selectedLocation ) {
-      await this.handleLocationSelected(this.selectedLocation);
-    }
+    this.forecast.showMessage("Zjišťuji polohu…");
+    const location = await this.resolveInitialLocation();
+    await this.handleLocationSelected(location);
 
     this.initialized = true;
+  }
+
+  /**
+   * Tries user's current position, falls back to the default location
+   * when geolocation is denied, unavailable, times out or no city is found.
+   */
+  private async resolveInitialLocation(): Promise<City> {
+    try {
+      const coords = await Utils.getCurrentPosition();
+      const city = await WeatherApi.getCityByCoords({ lat: coords.latitude, lon: coords.longitude });
+
+      if ( !city ) return App.DEFAULT_LOCATION;
+
+      // keep exact user's position for the forecast, the city is used for its name
+      return { ...city, lat: coords.latitude, lon: coords.longitude };
+    } catch ( e ) {
+      return App.DEFAULT_LOCATION;
+    }
   }
 
   private handleForecastDataLoaded(data: DayForecast[]) {
