@@ -13,7 +13,6 @@ export interface ForecastSlot {
 
 /** slots grouped by day */
 export interface DayForecast {
-  /** Start of the day */
   date: Date;
   slots: ForecastSlot[];
 }

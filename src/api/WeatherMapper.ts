@@ -1,6 +1,6 @@
 import type { City }                                          from "../types/city.ts";
 import type { DayForecast, ForecastSlot }                     from "../types/forecast.ts";
-import type { CityDTO, ForecastItemDTO, ForecastResponseDTO } from "../types/dto";
+import type { CityDTO, CityListItemDTO, ForecastItemDTO, ForecastResponseDTO } from "../types/dto";
 import { DateUtils }                                          from "../utils";
 
 export class WeatherMapper {
@@ -11,6 +11,16 @@ export class WeatherMapper {
       state: dto.state,
       lat: dto.lat,
       lon: dto.lon
+    };
+  }
+
+  static toCityFromListItem(dto: CityListItemDTO): City {
+    return {
+      name: dto.name,
+      country: dto.country,
+      state: dto.state || undefined,
+      lat: dto.coord.lat,
+      lon: dto.coord.lon
     };
   }
 

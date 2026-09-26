@@ -27,7 +27,7 @@ export class App {
     this.selectedLocation = null;
 
     this.searchbar = new Searchbar({
-      onLocationSelected: this.handleLocationSelected.bind(this)
+      onLocationSelected: this.handleLocationSelected.bind(this),
     });
 
     this.headerControls = new HeaderControls();

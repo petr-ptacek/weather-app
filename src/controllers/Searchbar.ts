@@ -1,16 +1,19 @@
-import { WeatherApi }            from "../api";
+import { CityRepositoryApi, WeatherApi } from "../api";
 import type { MaybeHTMLElement } from "../types";
 import type { City }             from "../types/city.ts";
 import { Utils }                 from "../utils";
 
 export interface SearchbarProps {
   cities?: City[];
+  enableCityRepository?: boolean;
 
   onLocationSelected(location: City): void;
 }
 
 const NO_RESULTS = "Žádné výsledky";
 const FETCH_ERROR = "Nepodařilo se načíst města";
+const LOADING_OPTIONS = "Načítání možností …";
+const LOAD_OPTIONS_ERROR = "Nepodařilo se načíst seznam měst";
 
 export class Searchbar {
   private _root: MaybeHTMLElement;
@@ -19,6 +22,10 @@ export class Searchbar {
   private _optionsElement: MaybeHTMLElement<HTMLDivElement> = null;
   private _messageElement: MaybeHTMLElement<HTMLDivElement> = null;
   private _props: SearchbarProps;
+  private _enableCityRepository: boolean;
+  private _cityRepository: CityRepositoryApi;
+  /** true while the local city list is being loaded */
+  private _loadingOptions: boolean = false;
 
   private _cities: City[];
 
@@ -26,6 +33,11 @@ export class Searchbar {
     this._root = null;
     this._inputElement = null;
     this._props = props;
+    this._enableCityRepository = this._props.enableCityRepository ?? true;
+    this._cityRepository = new CityRepositoryApi({
+      onCitiesLoaded: this.handleCitiesLoaded.bind(this),
+      onCitiesLoadError: this.handleCitiesLoadError.bind(this)
+    });
 
     this._cities = props.cities ?? [];
   }
@@ -41,10 +53,41 @@ export class Searchbar {
     this._inputElement?.addEventListener("focus", this.handleInputFocus.bind(this));
 
     document.addEventListener("click", this.handleDocumentClick.bind(this));
+
+    if ( this._enableCityRepository ) {
+      void this.loadOptions();
+    }
+  }
+
+  private async loadOptions() {
+    this._loadingOptions = true;
+    this.setInputDisabled(true);
+    this.setMessage(LOADING_OPTIONS);
+    this.showPopover();
+
+    await this._cityRepository.loadCities();
+  }
+
+  private handleCitiesLoaded(_cities: City[]) {
+    this._loadingOptions = false;
+    this.setInputDisabled(false);
+    this.setMessage("");
+    this.hidePopover();
+  }
+
+  private handleCitiesLoadError(_error: unknown) {
+    this._loadingOptions = false;
+    this.setMessage(LOAD_OPTIONS_ERROR, true);
+  }
+
+  private setInputDisabled(disabled: boolean) {
+    if ( !this._inputElement ) return;
+    this._inputElement.disabled = disabled;
   }
 
   private handleDocumentClick(e: MouseEvent) {
     if ( !this._root ) return;
+    if ( this._loadingOptions ) return;
 
     if ( !e.composedPath().includes(this._root) ) {
       this.hidePopover();
@@ -76,16 +119,17 @@ export class Searchbar {
       if ( Utils.isAbortError(e) ) return;
 
       this._cities = [];
-      this.setMessage(FETCH_ERROR);
+      this.setMessage(FETCH_ERROR, true);
     }
 
     this.drawOptions();
     this.showPopover();
   }
 
-  setMessage(message: string) {
+  setMessage(message: string, error: boolean = false) {
     if ( !this._messageElement ) return;
     this._messageElement.innerText = message;
+    this._messageElement.classList.toggle("searchbar__message--error", error);
   }
 
   showPopover() {
@@ -98,11 +142,26 @@ export class Searchbar {
 
   private handleLocationSelected(location: City) {
     this._props.onLocationSelected(location);
+    this.clear();
+  }
+
+  private clear() {
+    this._fetchCities.abort();
+    if ( this._inputElement ) this._inputElement.value = "";
+    this._cities = [];
+    this.drawOptions();
+    this.setMessage("");
     this.hidePopover();
   }
 
   private readonly _fetchCities = Utils.withAbortable(
-    (signal, query: string) => WeatherApi.getCities({ query }, signal)
+    async (signal, query: string): Promise<City[]> => {
+      if ( this._enableCityRepository ) {
+        return this._cityRepository.filterByQuery(query);
+      }
+
+      return WeatherApi.getCities({ query }, signal);
+    }
   );
 
   private drawOptions() {
