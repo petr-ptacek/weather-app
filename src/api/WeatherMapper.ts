@@ -40,7 +40,6 @@ export class WeatherMapper {
    */
   static toDayForecasts(dto: ForecastResponseDTO): DayForecast[] {
     const days: DayForecast[] = [];
-    debugger
 
     for ( const item of dto.list ) {
       const slot = WeatherMapper.toForecastSlot(item);
