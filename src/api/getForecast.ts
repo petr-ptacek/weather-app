@@ -1,4 +1,6 @@
-import type { ForecastResponse } from "../types/forecast.ts";
+import type { DayForecast }         from "../types/forecast.ts";
+import type { ForecastResponseDTO } from "../types/dto";
+import { mapForecast }              from "./mappers.ts";
 
 export interface GetForecastParams {
   lat: number;
@@ -11,7 +13,7 @@ const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
 export async function getForecast(
   params: GetForecastParams
-): Promise<ForecastResponse> {
+): Promise<DayForecast[]> {
   const url = new URL(FORECAST_API_URL);
 
   Object.entries({
@@ -31,5 +33,7 @@ export async function getForecast(
     );
   }
 
-  return response.json();
+  const data: ForecastResponseDTO = await response.json();
+
+  return mapForecast(data);
 }

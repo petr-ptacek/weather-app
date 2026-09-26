@@ -1,4 +1,6 @@
-import type { City } from "../types/city.ts";
+import type { City }    from "../types/city.ts";
+import type { CityDTO } from "../types/dto";
+import { mapCity }      from "./mappers.ts";
 
 export interface GetCitiesParams {
   query: string;
@@ -28,5 +30,7 @@ export async function getCities(params: GetCitiesParams): Promise<City[]> {
     );
   }
 
-  return response.json();
+  const data: CityDTO[] = await response.json();
+
+  return data.map(mapCity);
 }
