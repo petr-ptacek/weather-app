@@ -1,6 +1,12 @@
+@use "../abstracts/breakpoints" as bp;
+
 .box {
-  padding: 2rem;
+  padding: 1rem;
   background-color: var(--color-surface);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
+
+  @include bp.up(md) {
+    padding: 2rem;
+  }
 }

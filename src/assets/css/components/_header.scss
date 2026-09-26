@@ -1,7 +1,16 @@
+@use "../abstracts/breakpoints" as bp;
+
 .header {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+
+  @include bp.up(md) {
+    gap: 2rem;
+    flex-direction: row;
+  }
 
   &__title {
     font-size: 2.4rem;
@@ -10,7 +19,13 @@
 
   &__controls {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
+
+    @include bp.up(md) {
+      gap: 2rem;
+      flex-direction: row;
+    }
   }
 }
