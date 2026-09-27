@@ -20,7 +20,6 @@ onMounted(() => init());
 </script>
 
 <template>
-
   <table class="forecast__table forecast-table">
     <thead>
       <tr>

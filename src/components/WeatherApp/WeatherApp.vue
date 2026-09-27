@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ForecastTable }     from "@/components/ForecastTable";
+import { ForecastChart }     from "@/components/ForecastChart";
 import type { Props, Emits } from "./types";
 import { useController }     from "./useController";
 import { onMounted }         from "vue";
@@ -64,6 +65,15 @@ onMounted(() => init());
                   :data="tableData"
               />
             </div>
+          </div>
+
+          <div
+              v-if="initialized && !hasError"
+              class="box"
+          >
+            <ForecastChart
+                :data="tableData"
+            />
           </div>
 
         </div>
