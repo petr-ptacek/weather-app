@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { WeatherApp } from "./components";
 </script>
 
 <template>
-  <div>
-    Vue
-  </div>
+  <WeatherApp />
 </template>
