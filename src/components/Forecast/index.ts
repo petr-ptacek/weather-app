@@ -1,1 +1,0 @@
-export { default as TheForecast } from "./TheForecast.vue";
