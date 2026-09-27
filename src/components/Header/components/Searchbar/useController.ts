@@ -4,7 +4,7 @@ import { ref, useTemplateRef, watch }    from "vue";
 import { usePopover, usePopoverOptions } from "./composables";
 import type { UseControllerOptions }     from "./types";
 
-export function useController({ props, emit }: UseControllerOptions) {
+export function useController({ props, emit, selectedLocationMV }: UseControllerOptions) {
   void emit;
   void props;
 
@@ -60,6 +60,7 @@ export function useController({ props, emit }: UseControllerOptions) {
     popoverCtrl.clearMessage();
     popoverOptionsCtrl.clear();
     popoverCtrl.hide();
+    selectedLocationMV.value = option;
     emit("locationSelected", option);
   }
 

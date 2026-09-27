@@ -12,5 +12,5 @@ export type Emits = {
 export type UseControllerOptions = {
   props: Props;
   emit: Emits;
-  selectedOptionMV: Ref<City | null>;
+  selectedLocationMV: Ref<City | null>;
 };

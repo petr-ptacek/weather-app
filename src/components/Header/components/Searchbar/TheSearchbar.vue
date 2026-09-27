@@ -7,7 +7,7 @@ import { onMounted }         from "vue";
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const selectedOptionMV = defineModel<City | null>("modelValue", { default: null });
+const selectedLocationMV = defineModel<City | null>("selectedLocation", { default: null });
 
 const {
   init,
@@ -21,7 +21,7 @@ const {
 } = useController({
   props,
   emit,
-  selectedOptionMV
+  selectedLocationMV
 });
 
 onMounted(() => init());

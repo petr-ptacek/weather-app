@@ -1,3 +1,6 @@
+import type { City } from "@/types/city.ts";
+import type { Ref }  from "vue";
+
 export type Props = {
   _?: never;
 }
@@ -9,4 +12,5 @@ export type Emits = {
 export type UseControllerOptions = {
   props: Props;
   emit: Emits;
+  selectedLocationMV: Ref<City | null>;
 };
