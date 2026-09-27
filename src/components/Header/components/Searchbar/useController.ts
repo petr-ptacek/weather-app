@@ -37,7 +37,8 @@ export function useController({ props, emit, selectedLocationMV }: UseController
 
     popoverCtrl.setMessageLoadingOptions();
     popoverCtrl.show();
-    await popoverOptionsCtrl.fetchOptions(query);
+    const applied = await popoverOptionsCtrl.fetchOptions(query);
+    if ( !applied ) return;
 
     if ( popoverOptionsCtrl.error.value ) {
       popoverCtrl.setMessageFetchError();
