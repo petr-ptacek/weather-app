@@ -2,6 +2,7 @@
 import type { Props, Emits } from "./types";
 import { useController }     from "./useController";
 import { onMounted }         from "vue";
+import { TheSearchbar }      from "./components";
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
@@ -53,42 +54,16 @@ onMounted(() => init());
 
     <div id="header-controls" class="header__controls">
       <div class="location">
-        <svg class="icon location__icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <svg class="icon location__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <path d="M0 0h24v24H0z" fill="none" />
           <path
               fill="currentColor"
               d="M18 8c0-3.31-2.69-6-6-6S6 4.69 6 8c0 4.5 6 11 6 11s6-6.5 6-11m-8 0c0-1.1.9-2 2-2s2 .9 2 2a2 2 0 1 1-4 0M5 20v2h14v-2z" />
         </svg>
-        <span class="location__name"></span>
+        <span class="location__name">Olomouc, CS</span>
       </div>
 
-      <div id="searchbar" class="searchbar">
-        <svg class="icon searchbar__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M0 0h24v24H0z" fill="none" />
-          <path
-              fill="currentColor"
-              d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14" />
-        </svg>
-
-        <input type="search" class="searchbar__input" autocomplete="off" placeholder="Lokace">
-
-        <div class="searchbar__popover hidden">
-          <div class="searchbar__message"></div>
-
-          <ul class="searchbar__options">
-            <!--                                 <li> -->
-            <!--                                     <button type="button" class="searchbar__option searchbar__option&#45;&#45;highlighted"> -->
-            <!--                                         Olomouc <span class="searchbar__option-meta">CZ</span> -->
-            <!--                                     </button> -->
-            <!--                                 </li> -->
-            <!--                                 <li> -->
-            <!--                                     <button type="button" class="searchbar__option"> -->
-            <!--                                         Praha <span class="searchbar__option-meta">CZ</span> -->
-            <!--                                     </button> -->
-            <!--                                 </li> -->
-          </ul>
-        </div>
-      </div>
+      <TheSearchbar />
     </div>
   </header>
 </template>

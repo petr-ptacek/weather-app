@@ -1,11 +1,13 @@
-import type { City }                                          from "../types/city.ts";
-import type { DayForecast, ForecastSlot }                     from "../types/forecast.ts";
-import type { CityDTO, CityListItemDTO, ForecastItemDTO, ForecastResponseDTO } from "../types/dto";
-import { DateUtils }                                          from "../utils";
+import type { City }                                                           from "../types/city.ts";
+import type { DayForecast, ForecastSlot }                                      from "../types/forecast.ts";
+import type { CityDTO, CityListItemDTO, ForecastItemDTO, ForecastResponseDTO } from "@/types/dto";
+import { DateUtils }                                                           from "@/utils";
 
 export class WeatherMapper {
   static toCity(dto: CityDTO): City {
     return {
+      // Geocoding API returns no id
+      id: crypto.randomUUID(),
       name: dto.name,
       country: dto.country,
       state: dto.state,
@@ -16,6 +18,7 @@ export class WeatherMapper {
 
   static toCityFromListItem(dto: CityListItemDTO): City {
     return {
+      id: String(dto.id),
       name: dto.name,
       country: dto.country,
       state: dto.state || undefined,

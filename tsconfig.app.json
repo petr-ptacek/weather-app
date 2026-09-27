@@ -11,6 +11,10 @@
       "vite/client"
     ],
     "allowArbitraryExtensions": true,
+
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
