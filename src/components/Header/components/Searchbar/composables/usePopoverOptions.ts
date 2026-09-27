@@ -20,6 +20,8 @@ export function usePopoverOptions(opt: UsePopoverOptions) {
   }
 
   async function fetchOptions(query: string) {
+    error.value = null;
+
     if ( !opt.disableCityRepository ) {
       if ( cityRepositoryCtrl.data.value.length ) {
         _options.value = cityRepositoryCtrl.filterByQuery(query);

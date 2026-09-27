@@ -28,13 +28,6 @@ export function useController({ props, emit, selectedLocationMV }: UseController
     void fetchOptions(value);
   });
 
-  watch(popoverOptionsCtrl.error, (v) => {
-    if ( v ) {
-      popoverCtrl.setMessageFetchError();
-      popoverCtrl.show();
-    }
-  });
-
   async function init() {
     initialized.value = true;
   }
@@ -45,10 +38,13 @@ export function useController({ props, emit, selectedLocationMV }: UseController
     popoverCtrl.setMessageLoadingOptions();
     popoverCtrl.show();
     await popoverOptionsCtrl.fetchOptions(query);
-    popoverCtrl.clearMessage();
 
-    if ( !popoverOptionsCtrl.options.value.length ) {
+    if ( popoverOptionsCtrl.error.value ) {
+      popoverCtrl.setMessageFetchError();
+    } else if ( !popoverOptionsCtrl.options.value.length ) {
       popoverCtrl.setMessageNoResults();
+    } else {
+      popoverCtrl.clearMessage();
     }
   }
 
