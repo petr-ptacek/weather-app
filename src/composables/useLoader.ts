@@ -1,16 +1,11 @@
-import { ref, computed } from "vue";
+import { useCallback, useState } from "react";
 
 export function useLoader() {
-  const counter = ref(0);
-  const loading = computed(() => counter.value > 0);
+  const [counter, setCounter] = useState(0);
+  const loading = counter > 0;
 
-  function show() {
-    counter.value++;
-  }
-
-  function hide() {
-    counter.value--;
-  }
+  const show = useCallback(() => setCounter((v) => v + 1), []);
+  const hide = useCallback(() => setCounter((v) => v - 1), []);
 
   return {
     show,

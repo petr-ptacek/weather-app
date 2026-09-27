@@ -1,5 +1,7 @@
+import { WeatherApp } from "@/components";
+
 export default function App() {
   return (
-    <div>Hello</div>
+    <WeatherApp />
   );
 }

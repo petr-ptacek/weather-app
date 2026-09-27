@@ -1,1 +1,1 @@
-export { default as WeatherApp } from "./WeatherApp.vue";
+export { WeatherApp } from "./WeatherApp.tsx";

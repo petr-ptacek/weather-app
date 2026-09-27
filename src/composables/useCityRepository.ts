@@ -1,44 +1,49 @@
-import { useCityRepositoryApi } from "@/api";
-import { useLoader }            from "@/composables";
+import { useCityRepositoryApi }      from "@/api";
+import { useLoader }                 from "@/composables";
 import type { City }                 from "@/types/city.ts";
-import { computed, ref, shallowRef } from "vue";
+import { useMemo, useRef, useState } from "react";
 
 export function useCityRepository() {
   const api = useCityRepositoryApi();
   const loader = useLoader();
-  const data = shallowRef<City[]>([]);
-  const error = ref<Error | null>(null);
+  const [data, setData] = useState<City[]>([]);
+  const [error, setError] = useState<Error | null>(null);
 
-  const searchNames = computed(() => {
-    return data.value.map(i => normalize(i.name));
-  });
+  const searchNames = useMemo(
+    () => {
+      return data.map(i => normalize(i.name));
+    },
+    [data]
+  );
 
-  function clear() {
-    data.value = [];
-    error.value = null;
-  }
+  let loadingPromise = useRef<Promise<void> | null>(null);
 
-  let loadingPromise: Promise<void> | null = null;
 
   function load(): Promise<void> {
-    if ( loadingPromise ) return loadingPromise;
+    if ( loadingPromise.current ) return loadingPromise.current;
 
-    loadingPromise = doLoad().finally(() => {
-      loadingPromise = null;
+    loadingPromise.current = doLoad().finally(() => {
+      loadingPromise.current = null;
     });
 
-    return loadingPromise;
+    return loadingPromise.current;
+  }
+
+  function clear() {
+    setData([]);
+    setError(null);
   }
 
   async function doLoad() {
     loader.show();
-    error.value = null;
+    setError(null);
 
     try {
-      data.value = await api.fetchCities();
+      const cities = await api.fetchCities();
+      setData(cities);
     } catch ( e ) {
-      error.value = e as Error | null;
-      data.value = [];
+      setError(e as Error | null);
+      setData([]);
     } finally {
       loader.hide();
     }
@@ -50,9 +55,9 @@ export function useCityRepository() {
 
     const result: City[] = [];
 
-    for ( let i = 0; i < data.value.length && result.length < limit; i++ ) {
-      if ( searchNames.value[i].startsWith(normalizedQuery) ) {
-        result.push(data.value[i]);
+    for ( let i = 0; i < data.length && result.length < limit; i++ ) {
+      if ( searchNames[i].startsWith(normalizedQuery) ) {
+        result.push(data[i]);
       }
     }
 

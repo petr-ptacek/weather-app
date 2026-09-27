@@ -1,26 +1,28 @@
-import { type MaybeRef, onMounted, onUnmounted, toValue } from "vue";
+import { type RefObject, useEffect, useRef } from "react";
 
 export type UseClickOutsideOptions = {
-  element: MaybeRef<HTMLElement | null>;
+  element: RefObject<HTMLElement | null>;
   onClickOutside?: () => void;
 }
 
 export function useClickOutside(options: UseClickOutsideOptions) {
+  const { element } = options;
 
-  function handleClickOutside(e: PointerEvent) {
-    const element = toValue(options.element);
+  const callbackRef = useRef(options.onClickOutside);
+  callbackRef.current = options.onClickOutside;
 
-    if ( !element ) return;
-    if ( !e.composedPath().includes(element) ) {
-      options.onClickOutside?.();
+  useEffect(() => {
+    function handleClickOutside(e: PointerEvent) {
+      if ( !element.current ) return;
+      if ( !e.composedPath().includes(element.current) ) {
+        callbackRef.current?.();
+      }
     }
-  }
 
-  onMounted(() => {
     document.addEventListener("click", handleClickOutside);
-  });
 
-  onUnmounted(() => {
-    document.removeEventListener("click", handleClickOutside);
-  });
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [element]);
 }

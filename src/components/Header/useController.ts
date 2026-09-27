@@ -1,29 +1,13 @@
-import { computed, ref }             from "vue";
 import type { UseControllerOptions } from "./types";
 
-export function useController({ props, emit, selectedLocationMV }: UseControllerOptions) {
-  void emit;
-  void props;
+export function useController({ props }: UseControllerOptions) {
+  const { name, state, country } = props.selectedLocation ?? {};
 
-  const initialized = ref(false);
-
-  const locationStr = computed(() => {
-    if ( !selectedLocationMV.value ) {
-      return "";
-    }
-
-    const { name, state, country } = selectedLocationMV.value;
-
-    return `${ name }, ${ state ?? country }`;
-  });
-
-  function init() {
-    initialized.value = true;
-  }
+  const locationStr = props.selectedLocation ?
+                      `${ name }, ${ state ?? country }` :
+                      "";
 
   return {
-    init,
-    locationStr,
-    initialized
+    locationStr
   };
 }
