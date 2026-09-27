@@ -1,12 +1,12 @@
 import { useCityRepositoryApi } from "@/api";
 import { useLoader }            from "@/composables";
-import type { City }            from "@/types/city.ts";
-import { computed, ref }        from "vue";
+import type { City }                 from "@/types/city.ts";
+import { computed, ref, shallowRef } from "vue";
 
 export function useCityRepository() {
   const api = useCityRepositoryApi();
   const loader = useLoader();
-  const data = ref<City[]>([]);
+  const data = shallowRef<City[]>([]);
   const error = ref<Error | null>(null);
 
   const searchNames = computed(() => {
