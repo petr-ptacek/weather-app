@@ -10,7 +10,17 @@ import { DayTabs }   from "../DayTabs";
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const { init, location, days, selectedDay, tableData, initialized, infoMessage } = useController({
+const {
+  init,
+  location,
+  days,
+  selectedDay,
+  tableData,
+  initialized,
+  hasError,
+  infoMessage,
+  errorMessage
+} = useController({
   props,
   emit
 });
@@ -41,8 +51,12 @@ onMounted(() => init());
             <div class="forecast__message">{{ infoMessage }}</div>
           </div>
 
+          <div v-show="errorMessage" class="box">
+            <div class="forecast__message forecast__message--error">{{ errorMessage }}</div>
+          </div>
+
           <div
-              v-if="initialized"
+              v-if="initialized && !hasError"
               class="box"
           >
             <div class="overflow-x-auto">

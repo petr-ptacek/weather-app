@@ -27,6 +27,7 @@ export function useWeatherData(options: UseWeatherDataOptions) {
   }, { immediate: true });
 
   async function fetch({ lat, lon }: { lat: number, lon: number }) {
+    loader.show();
     error.value = null;
 
     try {

@@ -16,13 +16,15 @@ const DEFAULT_LOCATION: City = {
 } as const;
 
 const CHECK_POSITION = "Zjišťuji polohu…";
+const LOADING_DATA = "Načítání dat …";
+const FETCH_FORECAST_ERROR = "Nepodařilo se načíst předpověď počasí.";
 
 export function useController({ props, emit }: UseControllerOptions) {
   void emit;
   void props;
 
   const initialized = ref(false);
-  const infoMessage = ref("");
+  const positionMessage = ref("");
   const location = ref<City | null>(null);
   const selectedDay = ref<Date | null>(null);
 
@@ -33,6 +35,18 @@ export function useController({ props, emit }: UseControllerOptions) {
 
   const isDataLoading = computed(() => {
     return weatherDataCtrl.loading.value;
+  });
+
+  const hasError = computed(() => !!weatherDataCtrl.error.value);
+
+  const infoMessage = computed(() => {
+    if ( positionMessage.value ) return positionMessage.value;
+    if ( isDataLoading.value ) return LOADING_DATA;
+    return "";
+  });
+
+  const errorMessage = computed(() => {
+    return hasError.value ? FETCH_FORECAST_ERROR : "";
   });
 
   const tableData = computed<DayForecast | null>(() => {
@@ -49,7 +63,7 @@ export function useController({ props, emit }: UseControllerOptions) {
   }
 
   async function resolveInitialLocation(): Promise<City> {
-    infoMessage.value = CHECK_POSITION;
+    positionMessage.value = CHECK_POSITION;
 
     try {
       const coords = await Utils.getCurrentPosition();
@@ -61,13 +75,12 @@ export function useController({ props, emit }: UseControllerOptions) {
     } catch ( e ) {
       return DEFAULT_LOCATION;
     } finally {
-      infoMessage.value = "";
+      positionMessage.value = "";
     }
   }
 
 
   watch(weatherDataCtrl.days, (v) => {
-    if ( !v.length ) return;
     selectedDay.value = v.at(0) ?? null;
   });
 
@@ -78,7 +91,9 @@ export function useController({ props, emit }: UseControllerOptions) {
     location,
     initialized,
     isDataLoading,
+    hasError,
     infoMessage,
+    errorMessage,
     init
   };
 }
