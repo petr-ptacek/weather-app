@@ -1,3 +1,5 @@
+@use "../abstracts/breakpoints" as bp;
+
 .forecast-chart {
   display: flex;
   flex-direction: column;
@@ -5,8 +7,13 @@
 
   &__title {
     font-size: 1rem;
+    text-align: center;
     font-weight: 600;
     color: var(--color-text-muted);
+
+    @include bp.up(md) {
+      text-align: left;
+    }
   }
 
   &__canvas {
