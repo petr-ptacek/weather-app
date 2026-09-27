@@ -71,8 +71,9 @@ onMounted(() => init());
       </div>
 
       <TheSearchbar
-          :selected-location="selectedLocation"
-          @update:selected-location="selectedLocation = $event"
+          :selected-location="selectedLocationMV"
+          :disable-city-repository="disableCityRepository"
+          @update:selected-location="selectedLocationMV = $event"
       />
     </div>
   </header>

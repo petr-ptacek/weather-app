@@ -13,7 +13,9 @@ export function useController({ props, emit, selectedLocationMV }: UseController
 
   const rootEl = useTemplateRef<HTMLElement>("searchbar");
   const popoverCtrl = usePopover();
-  const popoverOptionsCtrl = usePopoverOptions();
+  const popoverOptionsCtrl = usePopoverOptions({
+    disableCityRepository: props.disableCityRepository ?? false
+  });
 
   useClickOutside({
     element: rootEl,
@@ -29,23 +31,23 @@ export function useController({ props, emit, selectedLocationMV }: UseController
   watch(popoverOptionsCtrl.error, (v) => {
     if ( v ) {
       popoverCtrl.setMessageFetchError();
-    } else {
-      popoverCtrl.clearMessage();
+      popoverCtrl.show();
     }
   });
 
-  function init() {
+  async function init() {
     initialized.value = true;
   }
 
   async function fetchOptions(query: string) {
+    if ( !query.trimStart().length ) return;
+
     popoverCtrl.setMessageLoadingOptions();
-    await popoverOptionsCtrl.fetch(query);
+    popoverCtrl.show();
+    await popoverOptionsCtrl.fetchOptions(query);
     popoverCtrl.clearMessage();
 
-    if ( popoverOptionsCtrl.options.value.length ) {
-      popoverCtrl.show();
-    } else {
+    if ( !popoverOptionsCtrl.options.value.length ) {
       popoverCtrl.setMessageNoResults();
     }
   }
@@ -60,6 +62,7 @@ export function useController({ props, emit, selectedLocationMV }: UseController
     popoverCtrl.clearMessage();
     popoverOptionsCtrl.clear();
     popoverCtrl.hide();
+    query.value = "";
     selectedLocationMV.value = option;
     emit("locationSelected", option);
   }

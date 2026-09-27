@@ -1,5 +1,7 @@
+import type { DayForecast } from "@/types/forecast.ts";
+
 export type Props = {
-  _?: never;
+  data?: DayForecast | null;
 }
 
 export type Emits = {

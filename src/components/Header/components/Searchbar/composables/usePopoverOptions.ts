@@ -1,24 +1,42 @@
-import { WeatherApi }    from "@/api";
-import { useLoader }     from "@/composables";
-import type { City }     from "@/types/city.ts";
-import { readonly, ref } from "vue";
+import { useWeatherApi }                from "@/api";
+import { useCityRepository, useLoader } from "@/composables";
+import type { City }                    from "@/types/city.ts";
+import { computed, readonly, ref }      from "vue";
 
-export function usePopoverOptions() {
-  const options = ref<City[]>([]);
+export type UsePopoverOptions = {
+  disableCityRepository: boolean;
+}
+
+export function usePopoverOptions(opt: UsePopoverOptions) {
+  const _options = ref<City[]>([]);
   const loader = useLoader();
   const error = ref<Error | null>(null);
 
+  const api = useWeatherApi();
+  const cityRepositoryCtrl = useCityRepository();
+
   function clear() {
-    options.value = [];
+    _options.value = [];
   }
 
-  async function fetch(query: string) {
+  async function fetchOptions(query: string) {
+    if ( !opt.disableCityRepository ) {
+      if ( cityRepositoryCtrl.data.value.length ) {
+        _options.value = cityRepositoryCtrl.filterByQuery(query);
+        return;
+      }
+
+      await cityRepositoryCtrl.load();
+      _options.value = cityRepositoryCtrl.filterByQuery(query);
+      return;
+    }
+
     loader.show();
 
     try {
-      options.value = await WeatherApi.getCities({ query });
+      _options.value = await api.getCities({ query });
     } catch ( e ) {
-      options.value = [];
+      _options.value = [];
       error.value = e as Error | null;
     } finally {
       loader.hide();
@@ -26,10 +44,10 @@ export function usePopoverOptions() {
   }
 
   return {
-    options: readonly(options),
-    error: readonly(error),
-    loading: loader.loading,
+    options: readonly(_options),
+    error: computed(() => error.value || cityRepositoryCtrl.error.value),
+    loading: computed(() => loader.loading.value || cityRepositoryCtrl.loading.value),
     clear,
-    fetch
+    fetchOptions
   };
 }

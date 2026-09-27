@@ -2,7 +2,7 @@ import type { Ref }  from "vue";
 import type { City } from "@/types/city.ts";
 
 export type Props = {
-  _?: never;
+  disableCityRepository?: boolean;
 }
 
 export type Emits = {
