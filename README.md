@@ -23,7 +23,7 @@ npm run dev             # vývojový server
 | Příkaz            | Popis                                                |
 |-------------------|------------------------------------------------------|
 | `npm run dev`     | spustí vývojový server (Vite)                        |
-| `npm run build`   | typová kontrola (`tsc`) a produkční build do `dist/` |
+| `npm run build`   | typová kontrola (`vue-tsc`) a produkční build do `dist/` |
 | `npm run preview` | lokálně spustí produkční build                       |
 
 **Bez API klíče aplikace zobrazí upozornění a nenačte se.**
@@ -36,15 +36,19 @@ Zjištění aktuální polohy vyžaduje zabezpečené spojení (HTTPS, případn
 
 ## Struktura
 
-- tech stack: `TypeScript`, `HTML`, `Sass`, build pomocí `Vite`
+- tech stack: `Vue 3` (Composition API, `<script setup>`), `TypeScript`, `Sass`, build pomocí `Vite`
 - napojení na externí `API` [OpenWeather](https://openweathermap.org/)
-- bez knihoven třetích stran, objektový přístup v celé codebase (třídy, pomocné třídy se statickými metodami)
+- graf: [ECharts](https://echarts.apache.org/) přes [vue-echarts](https://github.com/ecomfe/vue-echarts)
+  (knihovnu pro graf zadání povoluje), jinak bez knihoven třetích stran
+- logika v composables (funkce), sdílené pomocné funkce seskupené ve třídách se statickými metodami (`DateUtils`, `Utils`)
 
 ```
 public/data/cities.min.json   seznam měst pro našeptávač (OpenWeather city list, minifikovaný)
 src/
-  main.ts                     vstupní bod – vytvoří a inicializuje App
-  controllers/                správa jednotlivých částí DOM
+  main.ts                     vstupní bod – vytvoří Vue aplikaci
+  App.vue                     kořenová komponenta
+  components/                 komponenty aplikace
+  composables/                sdílené composables (seznam měst, loader, klik mimo prvek)
   api/                        komunikace s API a zdroji dat
   types/                      doménové typy aplikace
   types/dto/                  typy odpovídající datům z API (DTO)
@@ -52,29 +56,52 @@ src/
   assets/css/                 styly (Sass, BEM)
 ```
 
-### Controllers
+Alias `@` odkazuje na `src/` (`vite.config.ts`, `tsconfig.app.json`).
 
-Každý controller spravuje svou část DOM a o ostatních neví. Komunikace probíhá přes `App`:
-data putují dolů přes metody controllerů, události nahoru přes callbacky předané v konstruktoru.
+### Komponenty
 
-- `App` – drží stav aplikace (vybraná lokalita, předpověď), propojuje controllery, řídí orchestraci
-- `Searchbar` – vyhledávací pole s našeptávačem
-- `HeaderControls` – zobrazení vybrané lokality
+Každá komponenta má vlastní složku se stejnou strukturou:
+
+```
+ComponentName/
+  ComponentName.vue     šablona, props, emits
+  useController.ts      logika komponenty
+  types/                typy props, emits a controlleru
+  composables/          composables používané jen touto komponentou (volitelně)
+  index.ts              veřejný export
+```
+
+- `WeatherApp` – drží stav aplikace (vybraná lokalita, vybraný den, předpověď), zjišťuje výchozí polohu
+- `TheHeader` – zobrazení vybrané lokality a vyhledávání
+- `TheSearchbar` – vyhledávací pole s našeptávačem
 - `DayTabs` – výběr dne
-- `Forecast` – načtení předpovědi a tabulka se tříhodinovými intervaly
+- `ForecastTable` – tabulka předpovědi vybraného dne ve tříhodinových intervalech
+- `ForecastChart` – graf vývoje teploty vybraného dne
+
+Data putují dolů přes props, změny nahoru přes `v-model` (`defineModel`) a emits. Stav drží `WeatherApp`,
+ostatní komponenty o sobě navzájem nevědí.
 
 ```
-Searchbar ──onLocationSelected(city)──► App ──► HeaderControls (název lokality)
-                                         └────► Forecast.loadData(city)
-Forecast  ──onDataLoaded(days)────────► App ──► DayTabs (dny), Forecast (tabulka prvního dne)
-DayTabs   ──onDaySelected(day)────────► App ──► Forecast.drawTable(day)
+TheSearchbar ──v-model:selected-location──► TheHeader ──v-model:selected-location──► WeatherApp
+                                                                                      │ useWeatherData(location)
+DayTabs      ◄──:days, v-model:day─────────────────────────────────────────────────── ┤
+ForecastTable ◄──:data (vybraný den)────────────────────────────────────────────────── ┤
+ForecastChart ◄──:data (vybraný den)────────────────────────────────────────────────── ┘
 ```
+
+### Composables
+
+- `useCityRepository` – načte lokální seznam měst jednou (souběžná volání sdílí jeden request) a vyhledává v něm
+- `useLoader` – počítadlo probíhajících načítání (`loading`)
+- `useClickOutside` – zavře popover našeptávače při kliknutí mimo něj
+- `useWeatherData` (`WeatherApp`) – načtení předpovědi pro vybranou lokalitu
+- `usePopover`, `usePopoverOptions` (`TheSearchbar`) – stav popoveru a hledání možností
 
 ### API a data
 
-- `WeatherApi` – volání OpenWeather API (předpověď, reverse geocoding, vyhledávání měst)
-- `CityRepositoryApi` – načte lokální seznam měst jednou a vyhledává v něm v paměti
-- `WeatherMapper` – převod DTO z API na doménové typy, seskupení předpovědi po dnech
+- `useWeatherApi` – volání OpenWeather API (předpověď, reverse geocoding, vyhledávání měst)
+- `useCityRepositoryApi` – stažení lokálního seznamu měst
+- `useWeatherMapper` – převod DTO z API na doménové typy, seskupení předpovědi po dnech
 
 | Účel                  | Zdroj                                   |
 |-----------------------|-----------------------------------------|
@@ -82,13 +109,23 @@ DayTabs   ──onDaySelected(day)────────► App ──► Fore
 | název aktuální polohy | OpenWeather Reverse Geocoding API       |
 | předpověď             | OpenWeather 5 day / 3 hour Forecast API |
 
-Našeptávač lze přepnout na OpenWeather Geocoding API vypnutím flagu `enableCityRepository` v `Searchbar`. Lokální seznam
-měst obsahuje u některých měst anglické názvy (např. `Prague`).
+Našeptávač lze přepnout na OpenWeather Geocoding API propem `disable-city-repository` komponenty `WeatherApp`.
+Při hledání přes API se předchozí rozběhnutý request zruší (`Utils.withAbortable`), takže starší odpověď
+nepřepíše novější. Lokální seznam měst obsahuje u některých měst anglické názvy (např. `Prague`).
 
 Při spuštění se aplikace pokusí zjistit aktuální polohu uživatele. Pokud to není možné (zamítnutí, nepodporovaný
 prohlížeč, chyba), použije se výchozí lokalita Olomouc.
 
 Data a časy jsou formátovány podle jazyka prohlížeče (`Intl`).
+
+### Graf
+
+`ForecastChart` zobrazuje vývoj teploty vybraného dne – na ose x čas, na ose y teplota, tooltip s teplotou a
+pocitovou teplotou.
+
+- nastavení grafu sestavuje čistá funkce `createChartOption` nezávislá na frameworku
+- z ECharts se registrují jen použité části (`LineChart`, `GridComponent`, `TooltipComponent`, `CanvasRenderer`)
+- barvy se čtou z CSS proměnných, ECharts kreslí do canvasu a proměnné neumí použít přímo
 
 ### Styly
 
@@ -97,7 +134,7 @@ Data a časy jsou formátovány podle jazyka prohlížeče (`Intl`).
 - `abstracts/` – proměnné (barvy, písmo, okraje, zaoblení) a breakpointy
 - `base/` – reset a globální styly
 - `layout/` – rozložení stránky (`app`, `container`)
-- `components/` – jednotlivé bloky (`header`, `searchbar`, `day-tabs`, `forecast-table`, …)
+- `components/` – jednotlivé bloky (`header`, `searchbar`, `day-tabs`, `forecast-table`, `forecast-chart`, …)
 - `utils/` – utility třídy (`flex`, `gap-*`, `hidden`, …)
 
 ## Responsivita
@@ -133,30 +170,30 @@ Breakpointy jsou v `rem`, takže se layout přizpůsobí i zvětšenému písmu 
 
 #### Mobil
 
-![Náhled na mobilu](./docs/img/mobile.png)
+![Náhled na mobilu](./docs/img/responsive_mobile.png)
 
 #### Tablet
 
-![Náhled na tabletu](./docs/img/tablet.png)
+![Náhled na tabletu](./docs/img/responsive_tablet.png)
 
 #### Laptop
 
-![Náhled na laptopu](./docs/img/laptop.png)
+![Náhled na laptopu](./docs/img/responsive_laptop.png)
 
 #### Laptop L
 
-![Náhled na větším laptopu](./docs/img/laptop_L.png)
+![Náhled na větším laptopu](./docs/img/responsive_laptop_L.png)
 
 #### 4K
 
-![Náhled na 4K obrazovce](./docs/img/laptop_4K.png)
+![Náhled na 4K obrazovce](./docs/img/responsive_laptop_4K.png)
 
 ## Implementace
 
 | Větev   | Implementace              |
 |---------|---------------------------|
 | `main`  | TypeScript bez frameworku |
-| `vue`   | Vue *(připravuje se)*     |
+| `vue`   | Vue 3                     |
 | `react` | React *(připravuje se)*   |
 
 Funkčnost a vzhled jsou ve všech implementacích stejné, liší se vnitřní struktura. Každá větev obsahuje README

@@ -3,5 +3,5 @@ import { WeatherApp } from "./components";
 </script>
 
 <template>
-  <WeatherApp />
+  <WeatherApp :disable-city-repository="false" />
 </template>
