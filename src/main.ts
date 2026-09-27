@@ -1,3 +1,4 @@
-import { App } from "./controllers";
+import { createApp } from "vue";
+import App           from "./App.vue";
 
-new App().init();
+createApp(App).mount("#app");
