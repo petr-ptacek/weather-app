@@ -29,7 +29,7 @@ onMounted(() => init());
 </script>
 
 <template>
-  <div class="app">
+  <div class="weather-app">
     <div class="container">
       <div class="box flex flex-col gap-4">
         <TheHeader
