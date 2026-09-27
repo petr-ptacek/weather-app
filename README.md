@@ -20,11 +20,11 @@ cp .env.example .env    # do .env doplnit VITE_OPENWEATHER_API_KEY
 npm run dev             # vývojový server
 ```
 
-| Příkaz            | Popis                                                |
-|-------------------|------------------------------------------------------|
-| `npm run dev`     | spustí vývojový server (Vite)                        |
+| Příkaz            | Popis                                                    |
+|-------------------|----------------------------------------------------------|
+| `npm run dev`     | spustí vývojový server (Vite)                            |
 | `npm run build`   | typová kontrola (`vue-tsc`) a produkční build do `dist/` |
-| `npm run preview` | lokálně spustí produkční build                       |
+| `npm run preview` | lokálně spustí produkční build                           |
 
 **Bez API klíče aplikace zobrazí upozornění a nenačte se.**
 
@@ -40,7 +40,8 @@ Zjištění aktuální polohy vyžaduje zabezpečené spojení (HTTPS, případn
 - napojení na externí `API` [OpenWeather](https://openweathermap.org/)
 - graf: [ECharts](https://echarts.apache.org/) přes [vue-echarts](https://github.com/ecomfe/vue-echarts)
   (knihovnu pro graf zadání povoluje), jinak bez knihoven třetích stran
-- logika v composables (funkce), sdílené pomocné funkce seskupené ve třídách se statickými metodami (`DateUtils`, `Utils`)
+- logika v composables (funkce), sdílené pomocné funkce seskupené ve třídách se statickými metodami (`DateUtils`,
+  `Utils`)
 
 ```
 public/data/cities.min.json   seznam měst pro našeptávač (OpenWeather city list, minifikovaný)
@@ -78,8 +79,8 @@ ComponentName/
 - `ForecastTable` – tabulka předpovědi vybraného dne ve tříhodinových intervalech
 - `ForecastChart` – graf vývoje teploty vybraného dne
 
-Data putují dolů přes props, změny nahoru přes `v-model` (`defineModel`) a emits. Stav drží `WeatherApp`,
-ostatní komponenty o sobě navzájem nevědí.
+Data putují dolů přes props, změny nahoru přes `v-model` (`defineModel`) a emits. Stav drží `WeatherApp`, ostatní
+komponenty o sobě navzájem nevědí.
 
 ```
 TheSearchbar ──v-model:selected-location──► TheHeader ──v-model:selected-location──► WeatherApp
@@ -109,9 +110,9 @@ ForecastChart ◄──:data (vybraný den)────────────�
 | název aktuální polohy | OpenWeather Reverse Geocoding API       |
 | předpověď             | OpenWeather 5 day / 3 hour Forecast API |
 
-Našeptávač lze přepnout na OpenWeather Geocoding API propem `disable-city-repository` komponenty `WeatherApp`.
-Při hledání přes API se předchozí rozběhnutý request zruší (`Utils.withAbortable`), takže starší odpověď
-nepřepíše novější. Lokální seznam měst obsahuje u některých měst anglické názvy (např. `Prague`).
+Našeptávač lze přepnout na OpenWeather Geocoding API propem `disable-city-repository` komponenty `WeatherApp`. Při
+hledání přes API se předchozí rozběhnutý request zruší (`Utils.withAbortable`), takže starší odpověď nepřepíše novější.
+Lokální seznam měst obsahuje u některých měst anglické názvy (např. `Prague`).
 
 Při spuštění se aplikace pokusí zjistit aktuální polohu uživatele. Pokud to není možné (zamítnutí, nepodporovaný
 prohlížeč, chyba), použije se výchozí lokalita Olomouc.
@@ -120,8 +121,8 @@ Data a časy jsou formátovány podle jazyka prohlížeče (`Intl`).
 
 ### Graf
 
-`ForecastChart` zobrazuje vývoj teploty vybraného dne – na ose x čas, na ose y teplota, tooltip s teplotou a
-pocitovou teplotou.
+`ForecastChart` zobrazuje vývoj teploty vybraného dne – na ose x čas, na ose y teplota, tooltip s teplotou a pocitovou
+teplotou.
 
 - nastavení grafu sestavuje čistá funkce `createChartOption` nezávislá na frameworku
 - z ECharts se registrují jen použité části (`LineChart`, `GridComponent`, `TooltipComponent`, `CanvasRenderer`)
