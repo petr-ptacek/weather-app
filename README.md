@@ -38,7 +38,8 @@ Zjištění aktuální polohy vyžaduje zabezpečené spojení (HTTPS, případn
 
 - tech stack: `TypeScript`, `HTML`, `Sass`, build pomocí `Vite`
 - napojení na externí `API` [OpenWeather](https://openweathermap.org/)
-- bez knihoven třetích stran, objektový přístup v celé codebase (třídy, pomocné třídy se statickými metodami)
+- graf: [ECharts](https://echarts.apache.org/) (knihovnu pro graf zadání povoluje), jinak bez knihoven třetích stran
+- objektový přístup v celé codebase (třídy, pomocné třídy se statickými metodami)
 
 ```
 public/data/cities.min.json   seznam měst pro našeptávač (OpenWeather city list, minifikovaný)
@@ -48,7 +49,7 @@ src/
   api/                        komunikace s API a zdroji dat
   types/                      doménové typy aplikace
   types/dto/                  typy odpovídající datům z API (DTO)
-  utils/                      pomocné funkce (datum, geolokace, rušení requestů)
+  utils/                      pomocné funkce (datum, formátování, geolokace, rušení requestů)
   assets/css/                 styly (Sass, BEM)
 ```
 
@@ -61,13 +62,17 @@ data putují dolů přes metody controllerů, události nahoru přes callbacky p
 - `Searchbar` – vyhledávací pole s našeptávačem
 - `HeaderControls` – zobrazení vybrané lokality
 - `DayTabs` – výběr dne
-- `Forecast` – načtení předpovědi a tabulka se tříhodinovými intervaly
+- `Forecast` – načtení předpovědi, zprávy (načítání, chyba), předává data vybraného dne `ForecastTable` a `ForecastGraph`
+- `ForecastTable` – tabulka předpovědi vybraného dne ve tříhodinových intervalech
+- `ForecastGraph` – graf vývoje teploty vybraného dne
 
 ```
 Searchbar ──onLocationSelected(city)──► App ──► HeaderControls (název lokality)
                                          └────► Forecast.loadData(city)
-Forecast  ──onDataLoaded(days)────────► App ──► DayTabs (dny), Forecast (tabulka prvního dne)
-DayTabs   ──onDaySelected(day)────────► App ──► Forecast.drawTable(day)
+Forecast  ──onDataLoaded(days)────────► App ──► DayTabs (dny), Forecast.draw(první den)
+DayTabs   ──onDaySelected(day)────────► App ──► Forecast.draw(day)
+                                                  ├──► ForecastTable.draw(dayForecast)
+                                                  └──► ForecastGraph.draw(dayForecast)
 ```
 
 ### API a data
@@ -90,6 +95,16 @@ prohlížeč, chyba), použije se výchozí lokalita Olomouc.
 
 Data a časy jsou formátovány podle jazyka prohlížeče (`Intl`).
 
+### Graf
+
+`ForecastGraph` zobrazuje vývoj teploty vybraného dne – na ose x čas, na ose y teplota, tooltip s teplotou a pocitovou
+teplotou.
+
+- nastavení grafu sestavuje statická metoda `ForecastGraph.createOption`
+- z ECharts se registrují jen použité části (`LineChart`, `GridComponent`, `TooltipComponent`, `CanvasRenderer`)
+- barvy se čtou z CSS proměnných (`Utils.readCssVar`), ECharts kreslí do canvasu a proměnné neumí použít přímo
+- graf se inicializuje ve skryté sekci, proto se po zobrazení a při změně velikosti okna přepočítá jeho velikost
+
 ### Styly
 
 - metodika [BEM](https://getbem.com/), jeden soubor na blok
@@ -97,7 +112,7 @@ Data a časy jsou formátovány podle jazyka prohlížeče (`Intl`).
 - `abstracts/` – proměnné (barvy, písmo, okraje, zaoblení) a breakpointy
 - `base/` – reset a globální styly
 - `layout/` – rozložení stránky (`app`, `container`)
-- `components/` – jednotlivé bloky (`header`, `searchbar`, `day-tabs`, `forecast-table`, …)
+- `components/` – jednotlivé bloky (`header`, `searchbar`, `day-tabs`, `forecast-table`, `forecast-chart`, …)
 - `utils/` – utility třídy (`flex`, `gap-*`, `hidden`, …)
 
 ## Responsivita
@@ -133,31 +148,31 @@ Breakpointy jsou v `rem`, takže se layout přizpůsobí i zvětšenému písmu 
 
 #### Mobil
 
-![Náhled na mobilu](./docs/img/mobile.png)
+![Náhled na mobilu](./docs/img/responsive_mobile.png)
 
 #### Tablet
 
-![Náhled na tabletu](./docs/img/tablet.png)
+![Náhled na tabletu](./docs/img/responsive_tablet.png)
 
 #### Laptop
 
-![Náhled na laptopu](./docs/img/laptop.png)
+![Náhled na laptopu](./docs/img/responsive_laptop.png)
 
 #### Laptop L
 
-![Náhled na větším laptopu](./docs/img/laptop_L.png)
+![Náhled na větším laptopu](./docs/img/responsive_laptop_L.png)
 
 #### 4K
 
-![Náhled na 4K obrazovce](./docs/img/laptop_4K.png)
+![Náhled na 4K obrazovce](./docs/img/responsive_laptop_4K.png)
 
 ## Implementace
 
 | Větev   | Implementace              |
 |---------|---------------------------|
 | `main`  | TypeScript bez frameworku |
-| `vue`   | Vue *(připravuje se)*     |
-| `react` | React *(připravuje se)*   |
+| `vue`   | Vue 3                     |
+| `react` | React 19                  |
 
 Funkčnost a vzhled jsou ve všech implementacích stejné, liší se vnitřní struktura. Každá větev obsahuje README
 odpovídající své implementaci.
