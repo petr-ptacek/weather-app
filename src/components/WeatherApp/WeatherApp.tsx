@@ -1,8 +1,15 @@
 import { useController } from "./useController.ts";
 import type { Props }    from "./types.ts";
+import { ForecastTable } from "../ForecastTable";
 
 export function WeatherApp(props: Props) {
-  const { infoMessage, errorMessage, hasError } = useController({ props });
+  const {
+    infoMessage,
+    errorMessage,
+    hasError,
+    tableData,
+    isDataLoading
+  } = useController({ props });
 
 
   return (
@@ -33,13 +40,13 @@ export function WeatherApp(props: Props) {
             </div>
 
             {
-              !hasError &&
+              !hasError && !isDataLoading &&
               (
                 <div className="box">
                   <div className="overflow-x-auto">
-                    {/*  <ForecastTable*/ }
-                    {/*  :data="tableData"*/ }
-                    {/*   />*/ }
+                    <ForecastTable
+                      data={ tableData }
+                    />
                   </div>
                 </div>
               )
