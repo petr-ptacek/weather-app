@@ -23,7 +23,7 @@ npm run dev             # vývojový server
 | Příkaz            | Popis                                                    |
 |-------------------|----------------------------------------------------------|
 | `npm run dev`     | spustí vývojový server (Vite)                            |
-| `npm run build`   | typová kontrola (`vue-tsc`) a produkční build do `dist/` |
+| `npm run build`   | typová kontrola (`tsc`) a produkční build do `dist/`     |
 | `npm run preview` | lokálně spustí produkční build                           |
 
 **Bez API klíče aplikace zobrazí upozornění a nenačte se.**
@@ -36,21 +36,22 @@ Zjištění aktuální polohy vyžaduje zabezpečené spojení (HTTPS, případn
 
 ## Struktura
 
-- tech stack: `Vue 3` (Composition API, `<script setup>`), `TypeScript`, `Sass`, build pomocí `Vite`
+- tech stack: `React 19` (funkční komponenty, hooky), `TypeScript`, `Sass`, build pomocí `Vite`
 - napojení na externí `API` [OpenWeather](https://openweathermap.org/)
-- graf: [ECharts](https://echarts.apache.org/) přes [vue-echarts](https://github.com/ecomfe/vue-echarts)
+- graf: [ECharts](https://echarts.apache.org/) přes [echarts-for-react](https://github.com/hustcc/echarts-for-react)
   (knihovnu pro graf zadání povoluje), jinak bez knihoven třetích stran
-- logika v composables (funkce), sdílené pomocné funkce seskupené ve třídách se statickými metodami (`DateUtils`,
-  `Utils`)
+- logika v hookách a modulech s funkcemi, sdílené pomocné funkce seskupené ve třídách se statickými metodami
+  (`DateUtils`, `Utils`)
 
 ```
 public/data/cities.min.json   seznam měst pro našeptávač (OpenWeather city list, minifikovaný)
 src/
-  main.ts                     vstupní bod – vytvoří Vue aplikaci
-  App.vue                     kořenová komponenta
+  main.tsx                    vstupní bod – vytvoří React aplikaci
+  App.tsx                     kořenová komponenta
   components/                 komponenty aplikace
-  composables/                sdílené composables (seznam měst, loader, klik mimo prvek)
-  api/                        komunikace s API a zdroji dat
+  hooks/                      sdílené hooky (loader, klik mimo prvek)
+  api/                        komunikace s API (moduly s funkcemi)
+  repositories/               data v paměti (seznam měst)
   types/                      doménové typy aplikace
   types/dto/                  typy odpovídající datům z API (DTO)
   utils/                      pomocné funkce (datum, geolokace, rušení requestů)
@@ -65,10 +66,10 @@ Každá komponenta má vlastní složku se stejnou strukturou:
 
 ```
 ComponentName/
-  ComponentName.vue     šablona, props, emits
-  useController.ts      logika komponenty
-  types/                typy props, emits a controlleru
-  composables/          composables používané jen touto komponentou (volitelně)
+  ComponentName.tsx     JSX šablona
+  useController.ts      logika komponenty (stav, odvozené hodnoty, handlery)
+  types/                typy props a controlleru
+  hooks/                hooky používané jen touto komponentou (volitelně)
   index.ts              veřejný export
 ```
 
@@ -79,30 +80,36 @@ ComponentName/
 - `ForecastTable` – tabulka předpovědi vybraného dne ve tříhodinových intervalech
 - `ForecastChart` – graf vývoje teploty vybraného dne
 
-Data putují dolů přes props, změny nahoru přes `v-model` (`defineModel`) a emits. Stav drží `WeatherApp`, ostatní
-komponenty o sobě navzájem nevědí.
+Komponenty jsou řízené (*controlled*): data putují dolů přes props, změny nahoru přes callbacky v props
+(`onSelectedLocation`, `onDaySelected`, …). Stav drží `WeatherApp`, ostatní komponenty o sobě navzájem nevědí.
 
 ```
-TheSearchbar ──v-model:selected-location──► TheHeader ──v-model:selected-location──► WeatherApp
-                                                                                      │ useWeatherData(location)
-DayTabs      ◄──:days, v-model:day─────────────────────────────────────────────────── ┤
-ForecastTable ◄──:data (vybraný den)────────────────────────────────────────────────── ┤
-ForecastChart ◄──:data (vybraný den)────────────────────────────────────────────────── ┘
+TheSearchbar ──onSelectLocation──► TheHeader ──onSelectedLocation──► WeatherApp
+                                                                      │ useWeatherData(location)
+DayTabs       ◄──days, day / onDaySelected─────────────────────────── ┤
+ForecastTable ◄──data (vybraný den)─────────────────────────────────── ┤
+ForecastChart ◄──data (vybraný den)─────────────────────────────────── ┘
 ```
 
-### Composables
+Odvozené hodnoty (zprávy, data vybraného dne) se počítají přímo při renderu, stav drží jen to, co nejde spočítat.
 
-- `useCityRepository` – načte lokální seznam měst jednou (souběžná volání sdílí jeden request) a vyhledává v něm
+### Hooky
+
 - `useLoader` – počítadlo probíhajících načítání (`loading`)
 - `useClickOutside` – zavře popover našeptávače při kliknutí mimo něj
-- `useWeatherData` (`WeatherApp`) – načtení předpovědi pro vybranou lokalitu
-- `usePopover`, `usePopoverOptions` (`TheSearchbar`) – stav popoveru a hledání možností
+- `useWeatherData` (`WeatherApp`) – načtení předpovědi při změně lokality
+- `usePopoverOptions` (`TheSearchbar`) – hledání možností pro našeptávač
 
 ### API a data
 
-- `useWeatherApi` – volání OpenWeather API (předpověď, reverse geocoding, vyhledávání měst)
-- `useCityRepositoryApi` – stažení lokálního seznamu měst
-- `useWeatherMapper` – převod DTO z API na doménové typy, seskupení předpovědi po dnech
+- `api/weatherApi` – volání OpenWeather API (předpověď, reverse geocoding, vyhledávání měst)
+- `api/cityRepositoryApi` – stažení lokálního seznamu měst
+- `api/weatherMapper` – převod DTO z API na doménové typy, seskupení předpovědi po dnech
+- `repositories/cityRepository` – drží seznam měst v paměti pro celou aplikaci, stáhne ho jen jednou
+  (souběžná volání sdílí jeden request) a vyhledává v něm
+
+`api/` obsahuje jen komunikaci (získání a převod dat), `repositories/` data v paměti a hledání v nich. Obojí jsou
+obyčejné moduly s funkcemi, ne hooky – nepoužívají stav Reactu.
 
 | Účel                  | Zdroj                                   |
 |-----------------------|-----------------------------------------|
@@ -110,7 +117,7 @@ ForecastChart ◄──:data (vybraný den)────────────�
 | název aktuální polohy | OpenWeather Reverse Geocoding API       |
 | předpověď             | OpenWeather 5 day / 3 hour Forecast API |
 
-Našeptávač lze přepnout na OpenWeather Geocoding API propem `disable-city-repository` komponenty `WeatherApp`. Při
+Našeptávač lze přepnout na OpenWeather Geocoding API propem `disableCityRepository` komponenty `WeatherApp`. Při
 hledání přes API se předchozí rozběhnutý request zruší (`Utils.withAbortable`), takže starší odpověď nepřepíše novější.
 Lokální seznam měst obsahuje u některých měst anglické názvy (např. `Prague`).
 
@@ -125,7 +132,6 @@ Data a časy jsou formátovány podle jazyka prohlížeče (`Intl`).
 teplotou.
 
 - nastavení grafu sestavuje čistá funkce `createChartOption` nezávislá na frameworku
-- z ECharts se registrují jen použité části (`LineChart`, `GridComponent`, `TooltipComponent`, `CanvasRenderer`)
 - barvy se čtou z CSS proměnných, ECharts kreslí do canvasu a proměnné neumí použít přímo
 
 ### Styly
@@ -195,7 +201,7 @@ Breakpointy jsou v `rem`, takže se layout přizpůsobí i zvětšenému písmu 
 |---------|---------------------------|
 | `main`  | TypeScript bez frameworku |
 | `vue`   | Vue 3                     |
-| `react` | React *(připravuje se)*   |
+| `react` | React 19                  |
 
 Funkčnost a vzhled jsou ve všech implementacích stejné, liší se vnitřní struktura. Každá větev obsahuje README
 odpovídající své implementaci.
