@@ -62,7 +62,8 @@ data putují dolů přes metody controllerů, události nahoru přes callbacky p
 - `Searchbar` – vyhledávací pole s našeptávačem
 - `HeaderControls` – zobrazení vybrané lokality
 - `DayTabs` – výběr dne
-- `Forecast` – načtení předpovědi, zprávy (načítání, chyba), předává data vybraného dne `ForecastTable` a `ForecastGraph`
+- `Forecast` – načtení předpovědi, zprávy (načítání, chyba), předává data vybraného dne `ForecastTable` a
+  `ForecastGraph`
 - `ForecastTable` – tabulka předpovědi vybraného dne ve tříhodinových intervalech
 - `ForecastGraph` – graf vývoje teploty vybraného dne
 
@@ -165,6 +166,12 @@ Breakpointy jsou v `rem`, takže se layout přizpůsobí i zvětšenému písmu 
 #### 4K
 
 ![Náhled na 4K obrazovce](./docs/img/responsive_laptop_4K.png)
+
+## Použití AI
+
+Při vývoji jsem používal AI asistenta (Claude) jako pomocníka, hlavně na code review, vysvětlení konceptů v Reactu
+(reaktvita Vue vs React, race conditions), pomoc s implementací grafů, konfigurace vite, dokumentace. Architekturu,
+strukturu aplikace a rozhodnutí jsem určoval sám a veškerému kódu rozumím.
 
 ## Implementace
 
