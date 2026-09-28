@@ -17,8 +17,9 @@ export function DayTabs(props: Props) {
             }
 
             return (
-              <li key={ opt.id }>
+              <li key={ opt.id } className="day-tabs__item">
                 <button
+                  type="button"
                   className={ btnClassName }
                   onClick={ () => handleOptionSelected(opt) }
                 >
