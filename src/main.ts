@@ -1,3 +1,3 @@
 import { App } from "./controllers";
 
-new App().init();
+new App({ enableCityRepository: true }).init();

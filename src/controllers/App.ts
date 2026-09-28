@@ -7,6 +7,10 @@ import { DayTabs }          from "./DayTabs.ts";
 import { WeatherApi }       from "../api";
 import { Utils }            from "../utils";
 
+export interface AppProps {
+  enableCityRepository?: boolean;
+}
+
 export class App {
   private static readonly DEFAULT_LOCATION: City = {
     name: "Olomouc",
@@ -23,11 +27,12 @@ export class App {
   selectedLocation: City | null;
   initialized: boolean;
 
-  constructor() {
+  constructor(props: AppProps) {
     this.selectedLocation = null;
 
     this.searchbar = new Searchbar({
       onLocationSelected: this.handleLocationSelected.bind(this),
+      enableCityRepository: props.enableCityRepository
     });
 
     this.headerControls = new HeaderControls();
