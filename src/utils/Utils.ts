@@ -71,4 +71,8 @@ export class Utils {
     return e instanceof DOMException && e.name === "AbortError";
   }
 
+  static readCssVar(name: string): string {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
 }

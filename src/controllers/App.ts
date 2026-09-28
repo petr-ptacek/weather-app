@@ -79,11 +79,11 @@ export class App {
     if ( !days.length ) return;
     this.dayTabs.setDays(days);
     this.dayTabs.setSelectedDay(days.at(0)!);
-    this.forecast.drawTable(days.at(0)!);
+    this.forecast.draw(days.at(0)!);
   }
 
   private handleDaySelected(day: Date) {
-    this.forecast.drawTable(day);
+    this.forecast.draw(day);
   }
 
   async handleLocationSelected(location: City) {

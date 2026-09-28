@@ -12,5 +12,8 @@
     "sass": "^1.105.0",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
+  },
+  "dependencies": {
+    "echarts": "^6.1.0"
   }
 }
