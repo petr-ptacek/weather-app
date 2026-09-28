@@ -1,1 +1,0 @@
-export { useWeatherData } from "./useWeatherData";

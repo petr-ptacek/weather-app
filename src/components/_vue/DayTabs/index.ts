@@ -1,1 +1,0 @@
-export { default as DayTabs } from "./DayTabs.vue";

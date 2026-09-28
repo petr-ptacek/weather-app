@@ -1,1 +1,0 @@
-export { default as TheSearchbar } from "./TheSearchbar.vue";
