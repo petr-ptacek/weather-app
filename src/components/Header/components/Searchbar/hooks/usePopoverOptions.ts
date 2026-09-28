@@ -1,5 +1,5 @@
 import { weatherApi as api } from "@/api";
-import { useLoader }         from "@/composables";
+import { useLoader }         from "@/hooks";
 
 import { cityRepository as cityRepositoryCtrl } from "@/repositories";
 import type { City }                            from "@/types/city.ts";

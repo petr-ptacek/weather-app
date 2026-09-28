@@ -1,5 +1,5 @@
 import { weatherApi as api }   from "@/api";
-import { useLoader }           from "@/composables";
+import { useLoader }           from "@/hooks";
 import type { City }           from "@/types/city.ts";
 import type { DayForecast }    from "@/types/forecast.ts";
 import { useEffect, useState } from "react";

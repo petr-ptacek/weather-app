@@ -1,4 +1,4 @@
-import { useClickOutside }                                                from "@/composables";
+import { useClickOutside }                                                from "@/hooks";
 import type { City }                                                      from "@/types/city.ts";
 import { type ChangeEvent, type FocusEvent, useEffect, useRef, useState } from "react";
 import { usePopoverOptions }                                              from "./hooks";
