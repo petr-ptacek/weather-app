@@ -1,6 +1,7 @@
 import { useController } from "./useController.ts";
 import type { Props }    from "./types.ts";
 import { ForecastTable } from "../ForecastTable";
+import { TheHeader }     from "../Header";
 
 export function WeatherApp(props: Props) {
   const {
@@ -8,7 +9,9 @@ export function WeatherApp(props: Props) {
     errorMessage,
     hasError,
     tableData,
-    isDataLoading
+    isDataLoading,
+    location,
+    setLocation
   } = useController({ props });
 
 
@@ -16,10 +19,12 @@ export function WeatherApp(props: Props) {
     <div className="weather-app">
       <div className="container">
         <div className="box flex flex-col gap-4">
-          {/*<TheHeader*/ }
-          {/*  v-model:selected-location="location"*/ }
-          {/*:disable-city-repository="disableCityRepository"*/ }
-          {/* />*/ }
+          <TheHeader
+            selectedLocation={ location }
+            onSelectedLocation={ setLocation }
+            disableCityRepository={ props.disableCityRepository }
+          />
+
           {/*<DayTabs*/ }
           {/*  v-model:day="selectedDay"*/ }
           {/*:days="days"*/ }
