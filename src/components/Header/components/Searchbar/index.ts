@@ -1,1 +1,1 @@
-export { default as TheSearchbar } from "./TheSearchbar.vue";
+export { TheSearchbar } from "./TheSearchbar.tsx";

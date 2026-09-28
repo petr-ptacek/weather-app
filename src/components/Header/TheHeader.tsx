@@ -1,5 +1,6 @@
 import type { Props }    from "./types";
 import { useController } from "./useController.ts";
+import { TheSearchbar }  from "./components";
 
 export function TheHeader(props: Props) {
   const { locationStr } = useController({ props });
@@ -56,11 +57,7 @@ export function TheHeader(props: Props) {
           )
         }
 
-        {/*<TheSearchbar*/ }
-        {/*:selected-location="selectedLocationMV"*/ }
-        {/* :disable-city-repository="disableCityRepository"*/ }
-        {/* @update:selected-location="selectedLocationMV = $event"*/ }
-        {/* />*/ }
+        <TheSearchbar location={ props.selectedLocation } onSelectLocation={ props.onSelectedLocation } />
       </div>
     </header>
   );

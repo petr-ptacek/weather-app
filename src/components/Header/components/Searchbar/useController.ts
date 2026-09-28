@@ -1,79 +1,75 @@
-import { useClickOutside }               from "@/composables";
-import type { City }                     from "@/types/city.ts";
-import { ref, useTemplateRef, watch }    from "vue";
-import { usePopover, usePopoverOptions } from "./composables";
-import type { UseControllerOptions }     from "./types";
+import { useClickOutside }                                                from "@/composables";
+import type { City }                                                      from "@/types/city.ts";
+import { type ChangeEvent, type FocusEvent, useEffect, useRef, useState } from "react";
+import { usePopoverOptions }                                              from "./hooks";
+import type { UseControllerOptions }                                      from "./types";
 
-export function useController({ props, emit, selectedLocationMV }: UseControllerOptions) {
-  void emit;
-  void props;
+const NO_RESULTS = "Žádné výsledky";
+const FETCH_ERROR = "Nepodařilo se načíst města";
+const LOADING_OPTIONS = "Načítání možností …";
 
-  const initialized = ref(false);
-  const query = ref("");
-
-  const rootEl = useTemplateRef<HTMLElement>("searchbar");
-  const popoverCtrl = usePopover();
+export function useController({ props }: UseControllerOptions) {
+  const [query, setQuery] = useState("");
+  const rootEl = useRef<HTMLDivElement>(null);
+  const [popoverVisible, setPopoverVisible] = useState(false);
   const popoverOptionsCtrl = usePopoverOptions({
     disableCityRepository: props.disableCityRepository ?? false
   });
 
+  const popoverMessage =
+    popoverOptionsCtrl.loading ? LOADING_OPTIONS :
+    popoverOptionsCtrl.error ? FETCH_ERROR :
+    query.trimStart() && !popoverOptionsCtrl.options.length ? NO_RESULTS :
+    "";
+
   useClickOutside({
     element: rootEl,
     onClickOutside: () => {
-      popoverCtrl.visible.value && popoverCtrl.hide();
+      popoverVisible && setPopoverVisible(false);
     }
   });
 
-  watch(query, (value) => {
-    void fetchOptions(value);
-  });
+  useEffect(() => {
+    void fetchOptions(query);
+  }, [query]);
 
-  async function init() {
-    initialized.value = true;
-  }
 
   async function fetchOptions(query: string) {
     if ( !query.trimStart().length ) return;
 
-    popoverCtrl.setMessageLoadingOptions();
-    popoverCtrl.show();
-    const applied = await popoverOptionsCtrl.fetchOptions(query);
-    if ( !applied ) return;
-
-    if ( popoverOptionsCtrl.error.value ) {
-      popoverCtrl.setMessageFetchError();
-    } else if ( !popoverOptionsCtrl.options.value.length ) {
-      popoverCtrl.setMessageNoResults();
-    } else {
-      popoverCtrl.clearMessage();
-    }
+    setPopoverVisible(true);
+    await popoverOptionsCtrl.fetchOptions(query);
   }
 
-  function handleInputFocus(_e: Event) {
-    if ( popoverOptionsCtrl.options.value.length ) {
-      popoverCtrl.show();
+  function handleInputFocus(_e: FocusEvent<HTMLInputElement>) {
+    if ( popoverOptionsCtrl.options.length ) {
+      setPopoverVisible(true);
     }
   }
 
   function handleSelectOption(option: City) {
-    popoverCtrl.clearMessage();
     popoverOptionsCtrl.clear();
-    popoverCtrl.hide();
-    query.value = "";
-    selectedLocationMV.value = option;
-    emit("locationSelected", option);
+    setPopoverVisible(false);
+    setQuery("");
+    props.onSelectLocation(option);
+  }
+
+  function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
+    setQuery(event.target.value);
   }
 
   return {
     query,
-    initialized,
+    handleInputChange,
+
     options: popoverOptionsCtrl.options,
     optionsVisible: true,
 
-    popoverVisible: popoverCtrl.visible,
-    popoverMessage: popoverCtrl.message,
+    rootEl,
 
-    init,
+    popoverVisible,
+    popoverMessage,
+
     handleInputFocus,
     handleSelectOption
   };
