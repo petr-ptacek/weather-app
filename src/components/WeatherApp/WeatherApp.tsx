@@ -3,6 +3,7 @@ import type { Props }    from "./types.ts";
 import { ForecastTable } from "../ForecastTable";
 import { TheHeader }     from "../Header";
 import { ForecastChart } from "../ForecastChart";
+import { DayTabs }       from "../DayTabs";
 
 export function WeatherApp(props: Props) {
   const {
@@ -12,7 +13,10 @@ export function WeatherApp(props: Props) {
     tableData,
     isDataLoading,
     location,
-    setLocation
+    setLocation,
+    selectedDay,
+    setSelectedDay,
+    days
   } = useController({ props });
 
 
@@ -26,10 +30,7 @@ export function WeatherApp(props: Props) {
             disableCityRepository={ props.disableCityRepository }
           />
 
-          {/*<DayTabs*/ }
-          {/*  v-model:day="selectedDay"*/ }
-          {/*:days="days"*/ }
-          {/* />*/ }
+          <DayTabs day={ selectedDay } days={ days } onDaySelected={ setSelectedDay } />
         </div>
       </div>
 
