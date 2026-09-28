@@ -18,7 +18,8 @@ export function useController({ props, emit }: UseControllerOptions) {
   function init() {
     colors.value = {
       text: Utils.readCssVar("--color-text-muted"),
-      grid: Utils.readCssVar("--border-color")
+      grid: Utils.readCssVar("--border-color"),
+      line: Utils.readCssVar("--color-primary")
     };
 
     initialized.value = true;

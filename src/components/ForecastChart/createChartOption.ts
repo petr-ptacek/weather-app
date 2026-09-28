@@ -8,6 +8,7 @@ import { DateUtils }          from "@/utils";
  */
 
 export type ChartColors = {
+  line: string;
   text: string;
   grid: string;
 };
@@ -64,7 +65,10 @@ export function createChartOption(
         name: "Teplota",
         type: "line",
         data: slots.map(slot => slot.temperature),
-        symbol: "circle"
+        symbol: "circle",
+        symbolSize: 10,
+        lineStyle: { width: 2, color: colors.line },
+        itemStyle: { color: colors.line }
       }
     ]
   };
