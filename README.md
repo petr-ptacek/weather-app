@@ -189,6 +189,13 @@ Breakpointy jsou v `rem`, takže se layout přizpůsobí i zvětšenému písmu 
 
 ![Náhled na 4K obrazovce](./docs/img/responsive_laptop_4K.png)
 
+## Použití AI
+
+Při vývoji jsem používal AI asistenta (Claude) jako pomocníka, hlavně na code review, vysvětlení konceptů v Reactu
+(reaktvita Vue vs React, race conditions), pomoc s implementací grafů, konfigurace vite, dokumentace. Architekturu,
+strukturu aplikace a rozhodnutí jsem určoval sám a veškerému kódu rozumím.
+
+
 ## Implementace
 
 | Větev   | Implementace              |
