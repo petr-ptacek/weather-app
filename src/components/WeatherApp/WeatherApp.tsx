@@ -2,6 +2,7 @@ import { useController } from "./useController.ts";
 import type { Props }    from "./types.ts";
 import { ForecastTable } from "../ForecastTable";
 import { TheHeader }     from "../Header";
+import { ForecastChart } from "../ForecastChart";
 
 export function WeatherApp(props: Props) {
   const {
@@ -57,26 +58,16 @@ export function WeatherApp(props: Props) {
               )
             }
 
-            {/*<div*/ }
-            {/*  v-if="initialized && !hasError"*/ }
-            {/*  className="box"*/ }
-            {/*>*/ }
-            {/*<div className="overflow-x-auto">*/ }
-            {/*  <ForecastTable*/ }
-            {/*  :data="tableData"*/ }
-            {/*   />*/ }
-            {/*</div>*/ }
-            {/*</div>*/ }
-
-            {/*<div*/ }
-            {/*  v-if="initialized && !hasError"*/ }
-            {/*  className="box"*/ }
-            {/*>*/ }
-            {/*  <ForecastChart*/ }
-            {/*  :data="tableData"*/ }
-            {/*   />*/ }
-            {/*</div>*/ }
-
+            {
+              !hasError && !isDataLoading &&
+              (
+                <div className="box">
+                  <ForecastChart
+                    data={ tableData }
+                  />
+                </div>
+              )
+            }
           </div>
         </div>
       </main>
