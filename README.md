@@ -20,11 +20,11 @@ cp .env.example .env    # do .env doplnit VITE_OPENWEATHER_API_KEY
 npm run dev             # vývojový server
 ```
 
-| Příkaz            | Popis                                                    |
-|-------------------|----------------------------------------------------------|
-| `npm run dev`     | spustí vývojový server (Vite)                            |
-| `npm run build`   | typová kontrola (`tsc`) a produkční build do `dist/`     |
-| `npm run preview` | lokálně spustí produkční build                           |
+| Příkaz            | Popis                                                |
+|-------------------|------------------------------------------------------|
+| `npm run dev`     | spustí vývojový server (Vite)                        |
+| `npm run build`   | typová kontrola (`tsc`) a produkční build do `dist/` |
+| `npm run preview` | lokálně spustí produkční build                       |
 
 **Bez API klíče aplikace zobrazí upozornění a nenačte se.**
 
@@ -105,8 +105,8 @@ Odvozené hodnoty (zprávy, data vybraného dne) se počítají přímo při ren
 - `api/weatherApi` – volání OpenWeather API (předpověď, reverse geocoding, vyhledávání měst)
 - `api/cityRepositoryApi` – stažení lokálního seznamu měst
 - `api/weatherMapper` – převod DTO z API na doménové typy, seskupení předpovědi po dnech
-- `repositories/cityRepository` – drží seznam měst v paměti pro celou aplikaci, stáhne ho jen jednou
-  (souběžná volání sdílí jeden request) a vyhledává v něm
+- `repositories/cityRepository` – drží seznam měst v paměti pro celou aplikaci, stáhne ho jen jednou (souběžná volání
+  sdílí jeden request) a vyhledává v něm
 
 `api/` obsahuje jen komunikaci (získání a převod dat), `repositories/` data v paměti a hledání v nich. Obojí jsou
 obyčejné moduly s funkcemi, ne hooky – nepoužívají stav Reactu.
@@ -117,9 +117,9 @@ obyčejné moduly s funkcemi, ne hooky – nepoužívají stav Reactu.
 | název aktuální polohy | OpenWeather Reverse Geocoding API       |
 | předpověď             | OpenWeather 5 day / 3 hour Forecast API |
 
-Našeptávač lze přepnout na OpenWeather Geocoding API propem `disableCityRepository` komponenty `WeatherApp`. Při
-hledání přes API se předchozí rozběhnutý request zruší (`Utils.withAbortable`), takže starší odpověď nepřepíše novější.
-Lokální seznam měst obsahuje u některých měst anglické názvy (např. `Prague`).
+Našeptávač lze přepnout na OpenWeather Geocoding API propem `disableCityRepository` komponenty `WeatherApp`. Při hledání
+přes API se předchozí rozběhnutý request zruší (`Utils.withAbortable`), takže starší odpověď nepřepíše novější. Lokální
+seznam měst obsahuje u některých měst anglické názvy (např. `Prague`).
 
 Při spuštění se aplikace pokusí zjistit aktuální polohu uživatele. Pokud to není možné (zamítnutí, nepodporovaný
 prohlížeč, chyba), použije se výchozí lokalita Olomouc.
@@ -194,6 +194,12 @@ Breakpointy jsou v `rem`, takže se layout přizpůsobí i zvětšenému písmu 
 #### 4K
 
 ![Náhled na 4K obrazovce](./docs/img/responsive_laptop_4K.png)
+
+## Použití AI
+
+Při vývoji jsem používal AI asistenta (Claude) jako pomocníka, hlavně na code review, vysvětlení konceptů v Reactu
+(reaktvita Vue vs React, race conditions), pomoc s implementací grafů, konfigurace vite, dokumentace. Architekturu,
+strukturu aplikace a rozhodnutí jsem určoval sám a veškerému kódu rozumím.
 
 ## Implementace
 
