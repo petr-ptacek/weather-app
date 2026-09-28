@@ -93,6 +93,10 @@ ForecastChart ◄──data (vybraný den)────────────�
 
 Odvozené hodnoty (zprávy, data vybraného dne) se počítají přímo při renderu, stav drží jen to, co nejde spočítat.
 
+Stav aplikace je uložený v hookách (`useState`) a sdílí se přes props, Redux ani redux-saga nejsou použité. S Reactem
+teprve začínám, a tak jsem se v rámci úkolu soustředil na základy (hooky, řízené komponenty, efekty) a pokročilejší
+správu stavu jsem zatím vynechal. Sdílená data mimo React (seznam měst) drží modul `repositories/cityRepository`.
+
 ### Hooky
 
 - `useLoader` – počítadlo probíhajících načítání (`loading`)
