@@ -11,6 +11,9 @@ export interface AppProps {
   enableCityRepository?: boolean;
 }
 
+const CHECK_POSITION = "Zjišťuji polohu…";
+const NO_API_KEY = "Nemáte nastavený api klíč k OpenWeather API";
+
 export class App {
   private static readonly DEFAULT_LOCATION: City = {
     name: "Olomouc",
@@ -49,17 +52,18 @@ export class App {
   }
 
   async init() {
-    if ( !import.meta.env.VITE_OPENWEATHER_API_KEY ) {
-      alert("VITE_OPENWEATHER_API_KEY missing in .env.");
-      return;
-    }
-
     this.headerControls.init();
     this.searchbar.init();
     this.dayTabs.init();
     this.forecast.init();
 
-    this.forecast.showMessage("Zjišťuji polohu…");
+    if ( !import.meta.env.VITE_OPENWEATHER_API_KEY ) {
+      this.forecast.showMessage(NO_API_KEY, true);
+      this.initialized = true;
+      return;
+    }
+
+    this.forecast.showMessage(CHECK_POSITION);
     const location = await this.resolveInitialLocation();
     await this.handleLocationSelected(location);
 
