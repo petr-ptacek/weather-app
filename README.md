@@ -195,7 +195,7 @@ Breakpointy jsou v `rem`, takže se layout přizpůsobí i zvětšenému písmu 
 |---------|---------------------------|
 | `main`  | TypeScript bez frameworku |
 | `vue`   | Vue 3                     |
-| `react` | React *(připravuje se)*   |
+| `react` | React 19                  |
 
 Funkčnost a vzhled jsou ve všech implementacích stejné, liší se vnitřní struktura. Každá větev obsahuje README
 odpovídající své implementaci.
