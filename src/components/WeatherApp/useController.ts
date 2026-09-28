@@ -20,6 +20,7 @@ const FETCH_FORECAST_ERROR = "Nepodařilo se načíst předpověď počasí.";
 const NO_API_KEY = "Nemáte nastavený api klíč k OpenWeather API";
 
 export function useController(_options: UseControllerOptions) {
+  const [initialized, setInitialized] = useState(false);
   const [positionMessage, setPositionMessage] = useState("");
   const [location, setLocation] = useState<City | null>(null);
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
@@ -45,7 +46,9 @@ export function useController(_options: UseControllerOptions) {
 
   useEffect(() => {
     if ( !hasApiKey ) return;
-    resolveInitialLocation().then(loc => setLocation(loc));
+    resolveInitialLocation()
+      .then(loc => setLocation(loc))
+      .finally(() => setInitialized(true));
   }, []);
 
   useEffect(() => {
@@ -71,6 +74,8 @@ export function useController(_options: UseControllerOptions) {
 
 
   return {
+    initialized,
+
     days: weatherDataCtrl.days,
     tableData,
 

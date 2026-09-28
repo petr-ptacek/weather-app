@@ -16,6 +16,7 @@ export function WeatherApp(props: Props) {
     setLocation,
     selectedDay,
     setSelectedDay,
+    initialized,
     days
   } = useController({ props });
 
@@ -47,7 +48,7 @@ export function WeatherApp(props: Props) {
             </div>
 
             {
-              !hasError && !isDataLoading &&
+              !hasError && initialized && !isDataLoading &&
               (
                 <div className="box">
                   <div className="overflow-x-auto">
@@ -60,7 +61,7 @@ export function WeatherApp(props: Props) {
             }
 
             {
-              !hasError && !isDataLoading &&
+              !hasError && initialized && !isDataLoading &&
               (
                 <div className="box">
                   <ForecastChart
