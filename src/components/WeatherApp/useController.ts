@@ -18,6 +18,7 @@ const DEFAULT_LOCATION: City = {
 const CHECK_POSITION = "Zjišťuji polohu…";
 const LOADING_DATA = "Načítání dat …";
 const FETCH_FORECAST_ERROR = "Nepodařilo se načíst předpověď počasí.";
+const NO_API_KEY = "Nemáte nastavený api klíč k OpenWeather API";
 
 export function useController({ props, emit }: UseControllerOptions) {
   void emit;
@@ -27,6 +28,7 @@ export function useController({ props, emit }: UseControllerOptions) {
   const positionMessage = ref("");
   const location = ref<City | null>(null);
   const selectedDay = ref<Date | null>(null);
+  const hasApiKey = ref(!!import.meta.env.VITE_OPENWEATHER_API_KEY);
 
   const weatherApi = useWeatherApi();
   const weatherDataCtrl = useWeatherData({
@@ -46,6 +48,10 @@ export function useController({ props, emit }: UseControllerOptions) {
   });
 
   const errorMessage = computed(() => {
+    if ( !hasApiKey.value ) {
+      return NO_API_KEY;
+    }
+
     return hasError.value ? FETCH_FORECAST_ERROR : "";
   });
 
@@ -58,6 +64,10 @@ export function useController({ props, emit }: UseControllerOptions) {
   });
 
   async function init() {
+    if ( !hasApiKey.value ) {
+      return;
+    }
+
     location.value = await resolveInitialLocation();
     initialized.value = true;
   }
