@@ -1,0 +1,1 @@
+export * as cityRepository from "./cityRepository.ts";
