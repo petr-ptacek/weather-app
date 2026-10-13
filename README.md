@@ -110,8 +110,9 @@ ForecastChart ◄──:data (vybraný den)────────────�
 | název aktuální polohy | OpenWeather Reverse Geocoding API       |
 | předpověď             | OpenWeather 5 day / 3 hour Forecast API |
 
-Našeptávač lze přepnout na OpenWeather Geocoding API propem `disable-city-repository` komponenty `WeatherApp`. Při
-hledání přes API se předchozí rozběhnutý request zruší (`Utils.withAbortable`), takže starší odpověď nepřepíše novější.
+Našeptávač lze přepnout na OpenWeather Geocoding API nastavením proměnné prostředí `VITE_ENABLE_CITY_REPOSITORY=false`
+(v `.env`, při deployi přes GitHub Actions jako repository variable). Výchozí hodnota je `true`. Hodnota se předává
+propem `disable-city-repository` komponenty `WeatherApp`. Při hledání přes API se předchozí rozběhnutý request zruší (`Utils.withAbortable`), takže starší odpověď nepřepíše novější.
 Lokální seznam měst obsahuje u některých měst anglické názvy (např. `Prague`).
 
 Při spuštění se aplikace pokusí zjistit aktuální polohu uživatele. Pokud to není možné (zamítnutí, nepodporovaný
