@@ -1,5 +1,12 @@
 name: Deploy to GitHub Pages
 
+# Sestavi vsechny tri varianty aplikace a nasadi je jako jeden web:
+#   /weather-app/          -> rozcestnik (landing/ v main, styly z src/assets/css/pages/landing)
+#   /weather-app/vanilla/  -> main (plain TS)
+#   /weather-app/vue/      -> vue
+#   /weather-app/react/    -> react
+# Push do vetvi vue/react spousti tento workflow pres trigger-deploy.yml v dane vetvi.
+
 on:
   push:
     branches: [ main ]
@@ -14,23 +21,66 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  VITE_OPENWEATHER_API_KEY: ${{ secrets.VITE_OPENWEATHER_API_KEY }}
+  VITE_ENABLE_CITY_REPOSITORY: ${{ vars.VITE_ENABLE_CITY_REPOSITORY }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+      - uses: actions/checkout@v4
+        with:
+          ref: vue
+          path: vue
+      - uses: actions/checkout@v4
+        with:
+          ref: react
+          path: react
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run build
-        env:
-          VITE_OPENWEATHER_API_KEY: ${{ secrets.VITE_OPENWEATHER_API_KEY }}
-          VITE_ENABLE_CITY_REPOSITORY: ${{ vars.VITE_ENABLE_CITY_REPOSITORY }}
+          cache-dependency-path: |
+            main/package-lock.json
+            vue/package-lock.json
+            react/package-lock.json
+
+      - name: Build main (plain TS)
+        working-directory: main
+        run: |
+          npm ci
+          npm run build -- --base=/weather-app/vanilla/
+          npm run build:landing -- --base=/weather-app/
+
+      - name: Build vue
+        working-directory: vue
+        run: |
+          npm ci
+          npm run build -- --base=/weather-app/vue/
+
+      - name: Build react
+        working-directory: react
+        run: |
+          npm ci
+          npm run build -- --base=/weather-app/react/
+
+      - name: Assemble site
+        run: |
+          mkdir site
+          cp -r main/landing/dist/. site/
+          cp -r main/dist site/vanilla
+          cp -r vue/dist site/vue
+          cp -r react/dist site/react
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
 
   deploy:
     needs: build
