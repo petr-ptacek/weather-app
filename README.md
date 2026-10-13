@@ -9,6 +9,23 @@ dnu a to ve tříhodinnových intervalech.
 
 ![Náhled aplikace](./docs/img/preview.png)
 
+## Živá ukázka
+
+Zdrojový kód je na GitHubu: [petr-ptacek/weather-app](https://github.com/petr-ptacek/weather-app).
+
+Aplikaci lze vyzkoušet živě na GitHub Pages: *
+*[petr-ptacek.github.io/weather-app](https://petr-ptacek.github.io/weather-app/)**.
+Úvodní stránka je rozcestník mezi třemi implementacemi stejné aplikace:
+
+| Varianta | Větev   | URL                                                                         |
+|----------|---------|-----------------------------------------------------------------------------|
+| Vanilla  | `main`  | [/weather-app/vanilla/](https://petr-ptacek.github.io/weather-app/vanilla/) |
+| Vue      | `vue`   | [/weather-app/vue/](https://petr-ptacek.github.io/weather-app/vue/)         |
+| React    | `react` | [/weather-app/react/](https://petr-ptacek.github.io/weather-app/react/)     |
+
+Nasazení zajišťuje GitHub Actions (`.github/workflows/deploy.yml` ve větvi `main`) při každém pushi do `main`, `vue`
+nebo `react`. Workflow sestaví všechny tři varianty i rozcestník (`landing/`) a nasadí je jako jeden web.
+
 ## Spuštění
 
 Požadavky: [Node.js](https://nodejs.org/) (aktuální LTS) a bezplatný API klíč
@@ -20,11 +37,13 @@ cp .env.example .env    # do .env doplnit VITE_OPENWEATHER_API_KEY
 npm run dev             # vývojový server
 ```
 
-| Příkaz            | Popis                                                |
-|-------------------|------------------------------------------------------|
-| `npm run dev`     | spustí vývojový server (Vite)                        |
-| `npm run build`   | typová kontrola (`tsc`) a produkční build do `dist/` |
-| `npm run preview` | lokálně spustí produkční build                       |
+| Příkaz                  | Popis                                                |
+|-------------------------|------------------------------------------------------|
+| `npm run dev`           | spustí vývojový server (Vite)                        |
+| `npm run build`         | typová kontrola (`tsc`) a produkční build do `dist/` |
+| `npm run preview`       | lokálně spustí produkční build                       |
+| `npm run dev:landing`   | spustí vývojový server rozcestníku (`landing/`)      |
+| `npm run build:landing` | build rozcestníku do `landing/dist/`                 |
 
 **Bez API klíče aplikace zobrazí upozornění a nenačte se.**
 
