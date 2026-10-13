@@ -9,6 +9,23 @@ dnu a to ve tříhodinnových intervalech.
 
 ![Náhled aplikace](./docs/img/preview.png)
 
+## Živá ukázka
+
+Zdrojový kód je na GitHubu: [petr-ptacek/weather-app](https://github.com/petr-ptacek/weather-app) (Vue varianta je ve
+větvi `vue`).
+
+Aplikaci lze vyzkoušet živě na GitHub Pages:
+
+| Varianta   | Větev   | URL                                                                         |
+|------------|---------|-----------------------------------------------------------------------------|
+| rozcestník | `main`  | [/weather-app/](https://petr-ptacek.github.io/weather-app/)                 |
+| Vanilla    | `main`  | [/weather-app/vanilla/](https://petr-ptacek.github.io/weather-app/vanilla/) |
+| **Vue**    | `vue`   | [/weather-app/vue/](https://petr-ptacek.github.io/weather-app/vue/)         |
+| React      | `react` | [/weather-app/react/](https://petr-ptacek.github.io/weather-app/react/)     |
+
+Nasazení zajišťuje workflow `.github/workflows/deploy.yml` ve větvi `main`, který sestaví všechny varianty a nasadí je
+jako jeden web. Push do této větve ho spustí přes `.github/workflows/trigger-deploy.yml`.
+
 ## Spuštění
 
 Požadavky: [Node.js](https://nodejs.org/) (aktuální LTS) a bezplatný API klíč
@@ -112,8 +129,9 @@ ForecastChart ◄──:data (vybraný den)────────────�
 
 Našeptávač lze přepnout na OpenWeather Geocoding API nastavením proměnné prostředí `VITE_ENABLE_CITY_REPOSITORY=false`
 (v `.env`, při deployi přes GitHub Actions jako repository variable). Výchozí hodnota je `true`. Hodnota se předává
-propem `disable-city-repository` komponenty `WeatherApp`. Při hledání přes API se předchozí rozběhnutý request zruší (`Utils.withAbortable`), takže starší odpověď nepřepíše novější.
-Lokální seznam měst obsahuje u některých měst anglické názvy (např. `Prague`).
+propem `disable-city-repository` komponenty `WeatherApp`. Při hledání přes API se předchozí rozběhnutý request zruší
+(`Utils.withAbortable`), takže starší odpověď nepřepíše novější. Lokální seznam měst obsahuje u některých měst anglické
+názvy (např. `Prague`).
 
 Při spuštění se aplikace pokusí zjistit aktuální polohu uživatele. Pokud to není možné (zamítnutí, nepodporovaný
 prohlížeč, chyba), použije se výchozí lokalita Olomouc.
