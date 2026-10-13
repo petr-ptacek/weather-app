@@ -1,7 +1,7 @@
-import type { City }                         from "@/types/city";
+import type { City } from "@/types/city";
 import type { CityDTO, ForecastResponseDTO } from "@/types/dto";
-import type { DayForecast }                  from "@/types/forecast";
-import { useWeatherMapper }                  from "./useWeatherMapper";
+import type { DayForecast } from "@/types/forecast";
+import { useWeatherMapper } from "./useWeatherMapper";
 
 const REVERSE_GEO_API_URL = "https://api.openweathermap.org/geo/1.0/reverse";
 const GEO_API_URL = "https://api.openweathermap.org/geo/1.0/direct";
@@ -16,6 +16,7 @@ export interface GetCitiesParams {
 export interface GetForecastParams {
   lat: number;
   lon: number;
+  signal?: AbortSignal;
 }
 
 export interface GetCityByCoordsParams {
@@ -36,7 +37,7 @@ export function useWeatherApi() {
     const data = await request<CityDTO[]>(REVERSE_GEO_API_URL, {
       lat: params.lat,
       lon: params.lon,
-      limit: 1
+      limit: 1,
     });
 
     const city = data.at(0);
@@ -47,18 +48,22 @@ export function useWeatherApi() {
   async function getCities(params: GetCitiesParams, signal?: AbortSignal): Promise<City[]> {
     const data = await request<CityDTO[]>(GEO_API_URL, {
       q: params.query,
-      limit: 5
+      limit: 5,
     }, signal);
 
     return data.map(weatherMapper.toCity);
   }
 
   async function getForecast(params: GetForecastParams): Promise<DayForecast[]> {
-    const data = await request<ForecastResponseDTO>(FORECAST_API_URL, {
-      lat: params.lat,
-      lon: params.lon,
-      units: "metric"
-    });
+    const data = await request<ForecastResponseDTO>(
+      FORECAST_API_URL,
+      {
+        lat: params.lat,
+        lon: params.lon,
+        units: "metric",
+      },
+      params.signal,
+    );
 
     return weatherMapper.toDayForecasts(data);
   }
@@ -72,9 +77,9 @@ export function useWeatherApi() {
 
     const response = await fetch(url, { signal });
 
-    if ( !response.ok ) {
+    if (!response.ok) {
       throw new Error(
-        `Request to ${ url.pathname } failed: ${ response.status } ${ response.statusText }`
+        `Request to ${url.pathname} failed: ${response.status} ${response.statusText}`,
       );
     }
 
@@ -84,6 +89,6 @@ export function useWeatherApi() {
   return {
     getCityByCoords,
     getCities,
-    getForecast
+    getForecast,
   };
 }

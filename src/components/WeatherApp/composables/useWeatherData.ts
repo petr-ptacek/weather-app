@@ -1,7 +1,8 @@
-import { useWeatherApi }                  from "@/api";
-import { useLoader }                      from "@/composables";
-import type { City }                      from "@/types/city.ts";
-import type { DayForecast }               from "@/types/forecast.ts";
+import { useWeatherApi } from "@/api";
+import { useLoader } from "@/composables";
+import type { City } from "@/types/city.ts";
+import type { DayForecast } from "@/types/forecast.ts";
+import { Utils } from "@/utils";
 import { computed, ref, type Ref, watch } from "vue";
 
 export type UseWeatherDataOptions = {
@@ -15,24 +16,32 @@ export function useWeatherData(options: UseWeatherDataOptions) {
   const loader = useLoader();
   const api = useWeatherApi();
 
+  const _fetchForecastAbortable = Utils.withAbortable(
+    (signal, { lat, lon }: { lat: number, lon: number }) => {
+      return api.getForecast({ lat, lon, signal });
+    },
+  );
+
   const days = computed(() => data.value.map(d => d.date));
 
   watch(options.location, () => {
-    if ( !options.location.value ) {
+    if (!options.location.value) {
+      _fetchForecastAbortable.abort();
       data.value = [];
       return;
     }
 
-    fetch(options.location.value);
+    void _fetch(options.location.value);
   }, { immediate: true });
 
-  async function fetch({ lat, lon }: { lat: number, lon: number }) {
+  async function _fetch({ lat, lon }: { lat: number, lon: number }) {
     loader.show();
     error.value = null;
 
     try {
-      data.value = await api.getForecast({ lat, lon });
-    } catch ( e ) {
+      data.value = await _fetchForecastAbortable({ lat, lon });
+    } catch (e) {
+      if (Utils.isAbortError(e)) return;
       data.value = [];
       error.value = e as Error | null;
     } finally {
@@ -45,6 +54,6 @@ export function useWeatherData(options: UseWeatherDataOptions) {
     days,
     error,
     loading: loader.loading,
-    fetch
+    fetch: _fetch,
   };
 }
