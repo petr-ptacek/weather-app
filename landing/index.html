@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="../public/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Přehled počasí</title>
+    <link rel="stylesheet" href="../src/assets/css/pages/landing/main.scss" />
+</head>
+<body class="app">
+    <div class="container">
+        <div class="box flex flex-col gap-2">
+            <header class="header">
+                <div class="flex gap-1 items-center">
+                    <div class="header__icon icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                            <circle cx="25" cy="24" r="13" fill="#fbbf24" />
+
+                            <g stroke="#fbbf24" stroke-width="4" stroke-linecap="round">
+                                <path d="M25 4v5" />
+                                <path d="M25 39v5" />
+                                <path d="M5 24h5" />
+                                <path d="M40 24h5" />
+                                <path d="M11 10l4 4" />
+                                <path d="M39 10l-4 4" />
+                            </g>
+
+                            <path
+                                    d="M18 51h31
+       a10 10 0 0 0 0-20
+       a15 15 0 0 0-28-3
+       a12 12 0 0 0-3 23z"
+                                    fill="#e2e8f0"
+                                    stroke="#94a3b8"
+                                    stroke-width="2"
+                            />
+                        </svg>
+                    </div>
+                    <h1 class="header__title">Přehled počasí</h1>
+                </div>
+            </header>
+
+            <p class="lead">Stejná aplikace implementovaná třemi způsoby. Vyberte variantu, kterou chcete zobrazit.</p>
+        </div>
+    </div>
+
+    <main>
+        <div class="container">
+            <ul class="variants">
+                <li>
+                    <a class="box variant" href="vanilla/">
+                        <span class="variant__title">Vanilla</span>
+                        <span class="variant__description">TypeScript bez frameworku</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="box variant" href="vue/">
+                        <span class="variant__title">Vue</span>
+                        <span class="variant__description">Vue 3, Composition API</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="box variant" href="react/">
+                        <span class="variant__title">React</span>
+                        <span class="variant__description">React, hooks</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>
