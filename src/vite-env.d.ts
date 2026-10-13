@@ -10,6 +10,7 @@ interface ViteTypeOptions {
 
 interface ImportMetaEnv {
   readonly VITE_OPENWEATHER_API_KEY: string;
+  readonly VITE_ENABLE_CITY_REPOSITORY?: string;
 }
 
 interface ImportMeta {
