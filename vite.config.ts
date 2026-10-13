@@ -1,5 +1,3 @@
 import { defineConfig } from "vite";
 
-export default defineConfig({
-  base: process.env.GITHUB_ACTIONS ? "/weather-app/" : "/"
-});
+export default defineConfig({});
