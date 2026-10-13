@@ -88,8 +88,9 @@ DayTabs   ──onDaySelected(day)────────► App ──► Fore
 | název aktuální polohy | OpenWeather Reverse Geocoding API       |
 | předpověď             | OpenWeather 5 day / 3 hour Forecast API |
 
-Našeptávač lze přepnout na OpenWeather Geocoding API vypnutím flagu `enableCityRepository` v `Searchbar`. Lokální seznam
-měst obsahuje u některých měst anglické názvy (např. `Prague`).
+Našeptávač lze přepnout na OpenWeather Geocoding API nastavením proměnné prostředí `VITE_ENABLE_CITY_REPOSITORY=false`
+(v `.env`, při deployi přes GitHub Actions jako repository variable). Výchozí hodnota je `true`. Lokální seznam měst
+obsahuje u některých měst anglické názvy (např. `Prague`).
 
 Při spuštění se aplikace pokusí zjistit aktuální polohu uživatele. Pokud to není možné (zamítnutí, nepodporovaný
 prohlížeč, chyba), použije se výchozí lokalita Olomouc.

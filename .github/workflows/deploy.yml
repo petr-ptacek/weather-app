@@ -27,6 +27,7 @@ jobs:
       - run: npm run build
         env:
           VITE_OPENWEATHER_API_KEY: ${{ secrets.VITE_OPENWEATHER_API_KEY }}
+          VITE_ENABLE_CITY_REPOSITORY: ${{ vars.VITE_ENABLE_CITY_REPOSITORY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
